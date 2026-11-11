@@ -1,7 +1,8 @@
 # The explainer video and the README images, as code
 
 Everything in `docs/media/` is rendered from this folder: the 72-second
-explainer, the banner and one still per scene. Nothing is drawn by hand, so a
+explainer, looping GIFs of its five key scenes, the banner and one still per
+scene. Nothing is drawn by hand, so a
 change to the product story is a change to a few lines of TSX and a re-render.
 
 It is built with [Remotion](https://www.remotion.dev/) (React components
@@ -42,7 +43,13 @@ ffmpeg -y -framerate 30 -i out/frames/element-%04d.png \
   -vf "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p" \
   -c:v libx264 -crf 18 -preset slow -colorspace bt709 -color_primaries bt709 -color_trc bt709 \
   -movflags +faststart ../docs/media/spoofnet-tutorial.mp4
+bash make-gifs.sh                    # looping GIFs of five scenes into ../docs/media
 ```
+
+`make-gifs.sh` cuts the gap, jamming, spoofing, network and flight scenes out
+of the PNG sequence at 800 px and 15 frames per second. Each loop stops before
+its scene fades out and holds the finished picture for two seconds. GitHub
+plays GIFs in a README but not video files, which is why the README uses them.
 
 The frames are rendered as PNG and encoded by ffmpeg, with the colour matrix
 set explicitly, so that the dark background keeps its exact colour.

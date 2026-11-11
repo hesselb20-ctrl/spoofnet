@@ -10,23 +10,19 @@ the sky. SpoofNet is meant to see ports, shipping lanes, roads, fields and
 sites. It is **passive detection only**: nothing here transmits, and every
 interference signal used in development exists only in software.
 
-## The idea in 72 seconds
+## How it works
 
-[![Three scenes from the explainer: how a jammer differs from a roof, how several phones locate a source, and the one real flight.](docs/media/spoofnet-preview.gif)](docs/media/spoofnet-tutorial.mp4?raw=true)
-
-The clip shows three of nine scenes. The full explainer is
-[spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4?raw=true): 72 seconds,
-4.7 MB, no sound, every statement on screen checked against this repository.
-GitHub does not play video files kept in a repository, so the link downloads
-it. Every scene is also shown as a picture below. The video and the pictures
-are rendered from code in [tutorial/](tutorial/README.md).
-
-## How it works, in pictures
+Five short loops, 9 to 12 seconds each, show the core of the idea; three still
+pictures fill in the rest. They are cut from a 72-second explainer,
+[spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4?raw=true) (4.7 MB, no
+sound; GitHub does not play video files kept in a repository, so the link
+downloads it). A still version of every scene is in [docs/media/](docs/media).
+All of it is rendered from code in [tutorial/](tutorial/README.md).
 
 **1. The gap.** Public interference maps are built from what aircraft report.
 They show the sky. What happens in a port, on a road or in a field is blank.
 
-![Top: a row of map cells filled in from aircraft reports, four of them marked as affected. Bottom: a port crane, a ship, a truck and a tractor under a hatched band labelled "ground and sea level: no data".](docs/media/01-gap.png)
+![Top: a row of map cells filled in from aircraft reports, four of them marked as affected. Bottom: a port crane, a ship, a truck and a tractor under a hatched band labelled "ground and sea level: no data".](docs/media/gap.gif)
 
 **2. Phones already measure the satellites.** Every second an Android phone
 reports the signal strength of each satellite it hears, its receiver gain
@@ -39,13 +35,13 @@ the same amount and the receiver turns its gain down. A roof blocks unevenly
 and adds nothing. A phone with no gain reading cannot tell the two apart, so
 it reports "unknown loss" instead of guessing.
 
-![Two panels. Jamming: all bars equally low, gain low, alarm. Under a roof: bars uneven, gain unchanged, no alarm.](docs/media/03-jamming.png)
+![Two panels. Jamming: all bars equally low, gain low, alarm. Under a roof: bars uneven, gain unchanged, no alarm.](docs/media/jamming.gif)
 
 **4. Spoofing leaves fingerprints.** One transmitter makes all satellites look
 equally strong. Position or time jumps. Constellations that were not spoofed
 stop agreeing with the ones that were.
 
-![Left: a map where GPS reports a position far from where the phone is, while Galileo still agrees. Right: uniform signal bars, a clock offset step, and four evidence labels.](docs/media/04-spoofing.png)
+![Left: a map where GPS reports a position far from where the phone is, while Galileo still agrees. Right: uniform signal bars, a clock offset step, and four evidence labels.](docs/media/spoofing.gif)
 
 **5. Privacy by construction.** Detection runs on the phone. Raw measurements,
 positions and tracks stay there. What leaves is an event: a type, a coarse map
@@ -55,10 +51,10 @@ cell and a score, under a token that changes every day.
 
 **6. Many phones make an incident.** Three or more phones in one area open an
 incident. Phones nearer the source lose more signal, and that pattern points to
-where it is, with an uncertainty ellipse. The figures on the image are from
-simulation.
+where it is, with an uncertainty ellipse. The figures in the animation are
+from simulation.
 
-![A hex map with ten phones showing losses from 6 to 14 dB around an estimated source with a dashed uncertainty ellipse.](docs/media/06-network.png)
+![A hex map with ten phones showing losses from 6 to 14 dB around an estimated source with a dashed uncertainty ellipse.](docs/media/network.gif)
 
 **7. An honest map.** Where there are no phones the map says "no data". It
 never draws that as clean.
@@ -77,7 +73,7 @@ day, and nothing else. One phone, one flight, at 8 km altitude: an
 observation, not a validation. Details in
 [docs/validation/real_world.md](docs/validation/real_world.md).
 
-![A chart along the flight: the phone's signal strength and receiver gain both dip over Estonia and the Gulf of Finland, the detector's jamming event spans that dip, and bars show 18, 15, 24 and 20 percent of aircraft reporting low accuracy in the same cells.](docs/media/08-flight.png)
+![A chart along the flight: the phone's signal strength and receiver gain both dip over Estonia and the Gulf of Finland, the detector's jamming event spans that dip, and bars show 18, 15, 24 and 20 percent of aircraft reporting low accuracy in the same cells.](docs/media/flight.gif)
 
 ## Status, 11 November 2026
 
@@ -120,7 +116,7 @@ spoofnet/net        H3 cells, privacy, events, clustering, localisation, ADS-B c
 spoofnet/server     storage, publication rules, HTTP API
 web/                static map (MapLibre GL, OpenStreetMap, OpenSeaMap)
 tutorial/           the explainer video and the images above, as code (Remotion)
-docs/media/         the rendered video, preview clip and images
+docs/media/         the rendered video, the looping GIFs and the still images
 experiments/        the scripts that produce every reported number
 results/            their output
 config/             detector.json and real_tails.json (fitted, never hand-edited), publication_rules.json
