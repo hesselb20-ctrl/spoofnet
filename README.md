@@ -10,14 +10,19 @@ the sky. SpoofNet is meant to see ports, shipping lanes, roads, fields and
 sites. It is **passive detection only**: nothing here transmits, and every
 interference signal used in development exists only in software.
 
+**[Watch the 72-second explainer](https://hesselb20-ctrl.github.io/spoofnet/)** and
+**[open the demo map](https://hesselb20-ctrl.github.io/spoofnet/map/)** on the project site. The demo map shows
+simulated incidents only, and says so on the map.
+
 ## How it works
 
 Five short loops, 9 to 12 seconds each, show the core of the idea; three still
-pictures fill in the rest. They are cut from a 72-second explainer,
-[spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4?raw=true) (4.7 MB, no
-sound; GitHub does not play video files kept in a repository, so the link
-downloads it). A still version of every scene is in [docs/media/](docs/media).
-All of it is rendered from code in [tutorial/](tutorial/README.md).
+pictures fill in the rest. They are cut from the 72-second explainer, which
+plays on the [project site](https://hesselb20-ctrl.github.io/spoofnet/) (no sound). GitHub does not play video
+files kept in a repository, so here the file can only be downloaded:
+[spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4?raw=true), 4.7 MB.
+A still version of every scene is in [docs/media/](docs/media). All of it is
+rendered from code in [tutorial/](tutorial/README.md).
 
 **1. The gap.** Public interference maps are built from what aircraft report.
 They show the sky. What happens in a port, on a road or in a field is blank.
@@ -62,7 +67,7 @@ never draws that as clean.
 ![A hex map: orange incident cells inside green covered cells, everything else hatched as no data.](docs/media/07-map.png)
 
 The running map, here with simulated incidents and labelled as such (map data
-© OpenStreetMap contributors):
+© OpenStreetMap contributors). [Try it on the project site](https://hesselb20-ctrl.github.io/spoofnet/map/).
 
 ![Screenshot of the SpoofNet web map near Gdansk: hatched no-data veil, green coverage cells, an incident popup showing confidence, device count band, coverage and the evidence label "software replay".](docs/media/map-screenshot.jpg)
 
@@ -115,6 +120,7 @@ spoofnet/replay     replay harness, calibration, scoring
 spoofnet/net        H3 cells, privacy, events, clustering, localisation, ADS-B cross-check
 spoofnet/server     storage, publication rules, HTTP API
 web/                static map (MapLibre GL, OpenStreetMap, OpenSeaMap)
+site/               landing page of the project site (published by .github/workflows/pages.yml)
 tutorial/           the explainer video and the images above, as code (Remotion)
 docs/media/         the rendered video, the looping GIFs and the still images
 experiments/        the scripts that produce every reported number
@@ -164,7 +170,9 @@ python -m uvicorn spoofnet.server.app:app --port 8787     # then open http://loc
 ```
 
 The map also works without a server from the snapshot in `web/data/`, on any
-static host. Everything in that snapshot is simulated and is labelled so.
+static host. Everything in that snapshot is simulated and is labelled so. The
+[project site](https://hesselb20-ctrl.github.io/spoofnet/map/) serves exactly that: every push to `main` that
+touches `site/`, `web/` or `docs/media/` republishes it.
 
 Inspect a phone log:
 
