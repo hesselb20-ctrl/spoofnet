@@ -94,10 +94,11 @@ def _agc_drop(ms: MeasurementSet, jn_band: dict, rng) -> None:
     dev = _dev(ms)
     for bnd, jn in jn_band.items():
         col = ms.agc[:, bnd]
-        if not np.all(np.isfinite(col)) or np.nanstd(col) == 0.0:
+        fin = np.isfinite(col)
+        if fin.mean() < 0.8 or np.nanstd(col) == 0.0:
             continue                                   # absent or stuck AGC reports nothing
         drop = 10.0 * np.log10(1.0 + jn * BQ_HZ / dev["fe_bw_hz"])
-        ms.agc[:, bnd] = np.round((col - drop) / dev["agc_quant"]) * dev["agc_quant"]
+        ms.agc[:, bnd] = np.where(fin, np.round((col - drop) / dev["agc_quant"]) * dev["agc_quant"], np.nan)
 
 
 def jam_profile(n: int, t0: int, t1: int, drop_db: float, ramp_s: float, rng=None) -> np.ndarray:

@@ -379,6 +379,18 @@ into `train` (fit baselines and fusion), `val` (choose thresholds) and `test`
 (report). Test scenarios also draw environment and attack parameters from wider
 ranges than training, to expose over-fitting to the simulator.
 
+**Calibration against real logs.** The first receiver model was written from
+general knowledge and turned out far too clean. Five public real-phone logs
+(Zenodo 14712684: four phone models, on foot, by bike, bus, ferry and plane)
+show zenith C/N0 of 33 to 40 dB-Hz, only 2.5 to 8 dB between zenith and horizon,
+a one-second C/N0 change with a standard deviation of 1.7 to 2.9 dB while
+moving, AGC wandering by 1.4 to 7 dB within a session, and reported C/N0 down
+to 10 dB-Hz. The receiver model now uses those ranges. Detection rates fell by
+a wide margin when it did, which is the main reason the jamming target is
+missed (see `REPORT.md`). What is still not calibrated: the environments
+(canyon, forest, cabin attenuation), the injected interference itself, and
+anything about phones other than those four.
+
 **The limit of replay.** The simulator and the detectors are written by the
 same team from the same understanding of the physics. Replay numbers therefore
 show that the logic is right and give an upper bound on performance. They do not

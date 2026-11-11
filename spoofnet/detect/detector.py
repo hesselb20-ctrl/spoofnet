@@ -79,7 +79,10 @@ def probabilities(x: np.ndarray, cfg: DetectorConfig):
 
 def _reasons(e: dict, model: Logit, a: int, b: int, top: int = 3) -> list:
     b = min(b, a + 45)
-    contrib = {t: float(model.w[i] * np.mean(e[t][a:max(b, a + 1)])) for i, t in enumerate(model.terms) if t in REASON}
+    # Only evidence that is present and counts towards the alarm is named. A term with a negative
+    # weight and a below-normal value also adds to the score, but "no C/N0 rise" is not a reason.
+    contrib = {t: float(model.w[i] * np.mean(e[t][a:max(b, a + 1)])) for i, t in enumerate(model.terms)
+               if t in REASON and model.w[i] > 0 and float(np.mean(e[t][a:max(b, a + 1)])) > 0}
     out = []
     for t, v in sorted(contrib.items(), key=lambda kv: -kv[1]):
         if v > 0 and REASON[t] not in out:

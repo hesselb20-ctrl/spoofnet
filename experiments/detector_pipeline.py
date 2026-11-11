@@ -74,7 +74,10 @@ def main() -> None:
             log["val"]["jam_rule"][prof] = cfg.jam_rule[prof].to_dict()
             log["val"]["jam_candidates"][prof] = table
         if any(c in cal.SPOOF_CLASSES for c in classes):
-            cfg.spoof_rule, spoof_table = cal.choose_rule(val, "spoof", ("spoof_simple", "spoof_multi"))
+            # Chosen for all five spoofing classes together. Choosing for the two target classes
+            # alone picked a stricter threshold that cost a third of the drag-off, time-only and
+            # meaconing detections for no measured gain (results/m3_detector_first_threshold.json).
+            cfg.spoof_rule, spoof_table = cal.choose_rule(val, "spoof", cal.SPOOF_CLASSES)
             log["val"].update(spoof_rule=cfg.spoof_rule.to_dict(), spoof_candidates=spoof_table)
         del val
         cfg.provenance = {"stage": args.stage, "evidence": "replay", "fitted_on": "simulated train split",

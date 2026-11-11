@@ -39,6 +39,7 @@ class ScenarioSpec:
     t0_gps: float | None = None
     device: DeviceModel | None = None
     route_seed: int | None = None     # same route and surroundings on every visit; noise still varies
+    anchor_t: int | None = None       # `origin` is the position at this second instead of at the start
 
 
 def track_hysteresis(cn0_latent, thr, acq_margin, acq_delay, force_off=None):
@@ -91,6 +92,8 @@ def simulate(spec: ScenarioSpec) -> MeasurementSet:
     motion_kinds, net_kinds = ENV_KINDS[spec.env]
     rr = np.random.default_rng(spec.route_seed) if spec.route_seed is not None else rng
     motion = gen_motion(str(rr.choice(motion_kinds)), n, rr)
+    if spec.anchor_t is not None:
+        motion.enu[:, :2] -= motion.enu[min(spec.anchor_t, n - 1), :2]
     net_kind = str(rng.choice(net_kinds))
 
     pos = enu_to_ecef(motion.enu, lat0, lon0, 30.0)
