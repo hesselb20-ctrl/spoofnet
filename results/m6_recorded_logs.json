@@ -1,0 +1,242 @@
+{
+ "evidence": "replay (recorded clean logs, synthetic jamming injected)",
+ "logs_used": 4,
+ "logs_skipped": 1,
+ "excluded_folders": [
+  "FLIGHT"
+ ],
+ "clean_hours": 2.8441666666666667,
+ "alarms_on_clean_logs": 0,
+ "alarm_rate_per_hour": 0.0,
+ "alarm_rate_upper95_per_hour": 1.0532899877716928,
+ "injected_runs": 8,
+ "injected_detected": 7,
+ "injected_detection_rate": 0.875,
+ "injected_ci95": [
+  0.5291051942301386,
+  0.9775830911367038
+ ],
+ "by_kind": {
+  "ALL_BANDS": [
+   2,
+   2
+  ],
+  "L1_NARROW": [
+   3,
+   4
+  ],
+  "L1_WIDE": [
+   2,
+   2
+  ]
+ },
+ "with_agc": 4,
+ "dual_frequency": 2,
+ "logs_with_ephemeris": 1,
+ "alarms_by_type": {
+  "jam": 0,
+  "spoof": 0,
+  "meacon": 0
+ },
+ "not_covered": "spoofing injection (needs a trusted true position); ephemeris-assisted checks on logs without an ephemeris file",
+ "logs": [
+  {
+   "file": "BIKE/gnss_log_2024_10_15_14_56_12.txt",
+   "phone": "Version: v3.1.0.2 Platform: 14 Manufacturer: samsung Model: SM-A528B GNSS Hardware Model Name: qcom,SM_KODIAK,MPSS.HI.4.3.3.c3-00065.1-LC_ALL_PACK-1.7816.305,",
+   "ephemeris": null,
+   "epochs": 804,
+   "signals": 39,
+   "dual": false,
+   "agc_usable": true,
+   "has_elevation": true,
+   "median_tracked": 31.0,
+   "median_cn0": 37.5,
+   "capability": null,
+   "baseline_from_first_s": 268,
+   "clean_hours": 0.19833333333333333,
+   "alarms": [],
+   "clock_discontinuities": 0,
+   "loss_unknown": 0,
+   "baseline": {
+    "zen": [
+     41.790407245359106,
+     40.5
+    ],
+    "slope": [
+     6.984309494366113,
+     12.0
+    ],
+    "agc_sigma": [
+     0.16306790796111792,
+     NaN
+    ]
+   },
+   "injected": []
+  },
+  {
+   "file": "BUS/gnss_log_2024_10_14_09_08_08.txt",
+   "phone": "Version: v3.1.0.2 Platform: 14 Manufacturer: Google Model: Pixel 7 GNSS Hardware Model Name: Broadcom, BCM4776, GLL ver. 154.20.24 584644",
+   "ephemeris": null,
+   "epochs": 879,
+   "signals": 51,
+   "dual": true,
+   "agc_usable": true,
+   "has_elevation": true,
+   "median_tracked": 49.0,
+   "median_cn0": 29.369091033935547,
+   "capability": null,
+   "baseline_from_first_s": 293,
+   "clean_hours": 0.21916666666666668,
+   "alarms": [],
+   "clock_discontinuities": 0,
+   "loss_unknown": 0,
+   "baseline": {
+    "zen": [
+     33.14813364367515,
+     26.928342636514397
+    ],
+    "slope": [
+     3.222876532062971,
+     -1.8208429796648098
+    ],
+    "agc_sigma": [
+     0.8606686292409326,
+     1.198041343091618
+    ]
+   },
+   "injected": []
+  },
+  {
+   "file": "gnss_log_2024_05_20_20_36_55_rnx_data.txt",
+   "skipped": "ValueError: data\\recorded\\zenodo_14712684\\logs\\CAR\\gnss_log_2024_05_20_20_36_55_rnx_data.txt: no Raw records"
+  },
+  {
+   "file": "FERRY/gnss_log_2024_05_19_14_33_10.txt",
+   "phone": "Version: v3.0.6.4 Platform: 13 Manufacturer: Xiaomi Model: 22111317G",
+   "ephemeris": {
+    "satellites": 54,
+    "with_ephemeris": 41,
+    "signals_with_position": 41
+   },
+   "epochs": 5531,
+   "signals": 54,
+   "dual": false,
+   "agc_usable": true,
+   "has_elevation": true,
+   "median_tracked": 30.0,
+   "median_cn0": 31.7,
+   "capability": null,
+   "baseline_from_first_s": 1200,
+   "clean_hours": 1.511388888888889,
+   "alarms": [],
+   "clock_discontinuities": 17,
+   "loss_unknown": 8,
+   "baseline": {
+    "zen": [
+     36.10282594785047,
+     40.5
+    ],
+    "slope": [
+     10.216498696126578,
+     12.0
+    ],
+    "agc_sigma": [
+     0.28892942818192,
+     NaN
+    ]
+   },
+   "injected": [
+    {
+     "kind": "L1_NARROW",
+     "drop_db": 8.0,
+     "detected": true,
+     "ttd_s": 6.0,
+     "loss_unknown": false
+    },
+    {
+     "kind": "L1_WIDE",
+     "drop_db": 10.0,
+     "detected": true,
+     "ttd_s": 6.0,
+     "loss_unknown": false
+    },
+    {
+     "kind": "ALL_BANDS",
+     "drop_db": 10.0,
+     "detected": true,
+     "ttd_s": 6.0,
+     "loss_unknown": false
+    },
+    {
+     "kind": "L1_NARROW",
+     "drop_db": 13.0,
+     "detected": true,
+     "ttd_s": 5.0,
+     "loss_unknown": false
+    },
+    {
+     "kind": "L1_NARROW",
+     "drop_db": 8.0,
+     "detected": false,
+     "ttd_s": null,
+     "loss_unknown": false
+    }
+   ]
+  },
+  {
+   "file": "WALK/gnss_log_2023_09_08_18_41_13.txt",
+   "phone": "Version: v3.0.6.3 Platform: 12 Manufacturer: Xiaomi Model: 2201123G",
+   "ephemeris": null,
+   "epochs": 3385,
+   "signals": 87,
+   "dual": true,
+   "agc_usable": true,
+   "has_elevation": true,
+   "median_tracked": 65.0,
+   "median_cn0": 32.0,
+   "capability": null,
+   "baseline_from_first_s": 1128,
+   "clean_hours": 0.9152777777777777,
+   "alarms": [],
+   "clock_discontinuities": 0,
+   "loss_unknown": 0,
+   "baseline": {
+    "zen": [
+     36.913817529736626,
+     34.89444878669522
+    ],
+    "slope": [
+     11.148664182879948,
+     11.962969514539386
+    ],
+    "agc_sigma": [
+     0.1418014775306535,
+     0.12
+    ]
+   },
+   "injected": [
+    {
+     "kind": "L1_NARROW",
+     "drop_db": 8.0,
+     "detected": true,
+     "ttd_s": 5.0,
+     "loss_unknown": false
+    },
+    {
+     "kind": "L1_WIDE",
+     "drop_db": 10.0,
+     "detected": true,
+     "ttd_s": 5.0,
+     "loss_unknown": false
+    },
+    {
+     "kind": "ALL_BANDS",
+     "drop_db": 10.0,
+     "detected": true,
+     "ttd_s": 5.0,
+     "loss_unknown": false
+    }
+   ]
+  }
+ ]
+}
