@@ -1,0 +1,24 @@
+{
+  "_comment": "Region rules for publication and collection. See DESIGN.md section 10. The region list is empty on purpose: which places are restricted is a legal decision to be taken with local counsel before launch in each market, not an engineering default.",
+  "default": {
+    "mode": "default",
+    "public_res": 6,
+    "delay_s": 900,
+    "k": 3,
+    "quantise_s": 300,
+    "public_source": "none"
+  },
+  "regions": [],
+  "_region_example": {
+    "name": "example only, not active",
+    "mode": "restricted",
+    "cells5": ["<H3 res 5 cell ids covering the region>"],
+    "public_res": 5,
+    "delay_s": 21600
+  },
+  "_modes": {
+    "default": "public map shows the affected area at public_res after delay_s; no source estimate in public",
+    "restricted": "public map shows a coarser area with a longer delay; precise estimates only to vetted users and authorities",
+    "no_collection": "the app does not log in this region and the server rejects uploads from it"
+  }
+}

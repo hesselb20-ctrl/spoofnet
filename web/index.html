@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SpoofNet: ground-level GNSS interference map</title>
+  <meta name="description" content="Jamming and spoofing of GPS and other GNSS, seen from the ground by phones. Areas without contributors are shown as no data, never as clean.">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="map" role="application" aria-label="Map of GNSS interference incidents and coverage"></div>
+
+  <header class="panel brand" aria-label="About this map">
+    <h1>SpoofNet</h1>
+    <p class="sub">GNSS jamming and spoofing, seen from the ground</p>
+    <p id="evidence" class="pill pill-replay" role="status">Loading…</p>
+  </header>
+
+  <aside class="panel legend" aria-label="Legend and layers">
+    <h2>Incidents</h2>
+    <ul class="keys">
+      <li><span class="chip jam"></span>Jamming</li>
+      <li><span class="chip spoof"></span>Spoofing</li>
+      <li><span class="chip meacon"></span>Meaconing (rebroadcast)</li>
+    </ul>
+    <p class="hint">Stronger colour means higher confidence.</p>
+    <h2>Coverage</h2>
+    <ul class="keys">
+      <li><span class="chip cov-good"></span>Good: 5 or more contributors</li>
+      <li><span class="chip cov-some"></span>Some: 3 or 4 contributors</li>
+      <li><span class="chip cov-none"></span>No data</li>
+    </ul>
+    <p class="hint">Hatched areas have no data. That is not the same as no interference.</p>
+    <h2>Layers</h2>
+    <label class="switch"><input type="checkbox" id="t-incidents" checked><span></span>Incidents</label>
+    <label class="switch"><input type="checkbox" id="t-coverage" checked><span></span>Coverage and no-data</label>
+    <label class="switch"><input type="checkbox" id="t-sea"><span></span>Sea marks (OpenSeaMap)</label>
+  </aside>
+
+  <section class="panel timebar" aria-label="Time">
+    <button id="play" type="button" aria-label="Play through time" aria-pressed="false">Play</button>
+    <div class="slider">
+      <label for="time" id="time-label">Time</label>
+      <input id="time" type="range" min="0" max="0" step="1" value="0" aria-describedby="time-label">
+    </div>
+    <p id="summary" class="summary" role="status" aria-live="polite"></p>
+  </section>
+
+  <div id="state" class="panel state" role="alert" hidden></div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

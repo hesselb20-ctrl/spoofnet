@@ -1,0 +1,71 @@
+{
+ "evidence": "replay",
+ "generated": 1794427200.0,
+ "loaded": {
+  "jam": {
+   "events": 23,
+   "rejected": 0,
+   "pings": 124,
+   "reject_reasons": []
+  },
+  "spoof": {
+   "events": 12,
+   "rejected": 0,
+   "pings": 47,
+   "reject_reasons": []
+  },
+  "meacon": {
+   "events": 8,
+   "rejected": 0,
+   "pings": 37,
+   "reject_reasons": []
+  }
+ },
+ "alerts": [
+  {
+   "geofence_id": 1,
+   "type": "jam",
+   "confidence": 1.0,
+   "geofence_coverage_share": 0.38
+  },
+  {
+   "geofence_id": 1,
+   "type": "spoof",
+   "confidence": 1.0,
+   "geofence_coverage_share": 0.36
+  },
+  {
+   "geofence_id": 1,
+   "type": "meacon",
+   "confidence": 0.999,
+   "geofence_coverage_share": 0.29
+  }
+ ],
+ "incidents": {
+  "public": 3,
+  "customer": 3,
+  "vetted": 3
+ },
+ "public_example": [
+  {
+   "id": "3f7f18db896e",
+   "type": "jam",
+   "confidence": 1.0,
+   "evidence": "replay",
+   "adsb": "no_adsb_coverage",
+   "t_start": 1794353400,
+   "t_end": 1794354000,
+   "devices": "11-25",
+   "cells": [
+    "861f7240fffffff",
+    "861f72457ffffff",
+    "861f72477ffffff"
+   ],
+   "cell_res": 6,
+   "coverage": "good"
+  }
+ ],
+ "coverage_cells_last_hour": 31,
+ "geofence_id": 1,
+ "snapshot_slots": 24
+}
