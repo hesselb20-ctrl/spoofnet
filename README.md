@@ -12,12 +12,14 @@ interference signal used in development exists only in software.
 
 ## The idea in 72 seconds
 
-[![Three scenes from the explainer: how a jammer differs from a roof, how several phones locate a source, and the one real flight.](docs/media/spoofnet-preview.gif)](docs/media/spoofnet-tutorial.mp4)
+[![Three scenes from the explainer: how a jammer differs from a roof, how several phones locate a source, and the one real flight.](docs/media/spoofnet-preview.gif)](docs/media/spoofnet-tutorial.mp4?raw=true)
 
 The clip shows three of nine scenes. The full explainer is
-[docs/media/spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4): 72
-seconds, no sound, every statement on screen checked against this repository.
-It is rendered from code in [tutorial/](tutorial/README.md).
+[spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4?raw=true): 72 seconds,
+4.7 MB, no sound, every statement on screen checked against this repository.
+GitHub does not play video files kept in a repository, so the link downloads
+it. Every scene is also shown as a picture below. The video and the pictures
+are rendered from code in [tutorial/](tutorial/README.md).
 
 ## How it works, in pictures
 
