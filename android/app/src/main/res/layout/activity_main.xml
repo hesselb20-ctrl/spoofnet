@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One scrolling column. The opt-in group and the main group are swapped by visibility,
+     which keeps the app to a single activity and a single layout. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Opt-in -->
+        <LinearLayout
+            android:id="@+id/group_optin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/optin_title"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:lineSpacingMultiplier="1.15"
+                android:text="@string/optin_body"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <Button
+                android:id="@+id/button_accept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/optin_accept" />
+        </LinearLayout>
+
+        <!-- Main -->
+        <LinearLayout
+            android:id="@+id/group_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/section_logging"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <TextView
+                android:id="@+id/text_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/status_idle"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/mode_label"
+                android:textAppearance="?attr/textAppearanceSubtitle1" />
+
+            <RadioGroup
+                android:id="@+id/group_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/mode_continuous"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_continuous" />
+
+                <RadioButton
+                    android:id="@+id/mode_balanced"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_balanced" />
+
+                <RadioButton
+                    android:id="@+id/mode_saver"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mode_saver" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_start"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/button_start" />
+
+                <Button
+                    android:id="@+id/button_stop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/button_stop" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_background"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_background"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/section_live"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <TextView
+                android:id="@+id/text_live_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/live_waiting"
+                android:textAppearance="?attr/textAppearanceBody2" />
+
+            <TextView
+                android:id="@+id/text_satellites"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <TextView
+                android:id="@+id/text_cn0_l1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <TextView
+                android:id="@+id/text_cn0_l5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <TextView
+                android:id="@+id/text_agc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <TextView
+                android:id="@+id/text_clock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <Button
+                android:id="@+id/button_capability"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/button_capability" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/section_battery"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <TextView
+                android:id="@+id/text_battery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/battery_none"
+                android:textAppearance="?attr/textAppearanceBody1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/section_files"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+
+            <TextView
+                android:id="@+id/text_file"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/file_none"
+                android:textAppearance="?attr/textAppearanceBody2" />
+
+            <Button
+                android:id="@+id/button_share"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/button_share" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

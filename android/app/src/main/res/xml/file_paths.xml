@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Only the log folder is shareable; the internal path covers phones without mounted external storage. -->
+<paths>
+    <external-files-path
+        name="logs"
+        path="logs/" />
+    <files-path
+        name="logs_internal"
+        path="logs/" />
+</paths>

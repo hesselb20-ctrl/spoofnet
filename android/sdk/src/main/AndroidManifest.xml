@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Permissions are declared by the host app, not here, so a host decides
+    for itself whether it also wants background location.
+    The SDK needs ACCESS_FINE_LOCATION at runtime and nothing else.
+-->
+<manifest />

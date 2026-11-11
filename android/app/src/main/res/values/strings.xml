@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SpoofNet</string>
+
+    <!-- Opt-in -->
+    <string name="optin_title">Before you start</string>
+    <string name="optin_body">SpoofNet records how well your phone receives satellite navigation signals (GPS, Galileo, GLONASS, BeiDou and others), so that jamming and spoofing can be studied.\n\nWhat is collected: raw satellite measurements (signal strength, timing, receiver gain), the satellites in view, the position reported by GPS and by the mobile network, motion sensor readings, and battery level.\n\nWhere it goes: the raw data stays on this phone, in a file that only this app can write. Nothing is uploaded. This version of the app has no internet permission at all. A file leaves the phone only if you export it yourself with the share button.\n\nListening only: the app only listens to signals that are already there. It never transmits anything and never asks your phone to transmit. Transmitting on satellite navigation frequencies is illegal almost everywhere, and no SpoofNet test needs it.\n\nThe app does not point you towards any source of interference and does not reward getting closer to one. Please do not go looking for interference.\n\nYour responsibility: in some countries, recording interference near military or other defence sites may be restricted. You are responsible for following the law where you use the app.</string>
+    <string name="optin_accept">I understand, continue</string>
+
+    <!-- Main screen -->
+    <string name="section_logging">Logging</string>
+    <string name="section_live">Live values</string>
+    <string name="section_battery">Battery</string>
+    <string name="section_files">Log file</string>
+
+    <string name="mode_label">Mode</string>
+    <string name="mode_continuous">Continuous: always on, 1 Hz</string>
+    <string name="mode_balanced">Balanced: 20 s on, 100 s off</string>
+    <string name="mode_saver">Saver: 15 s every 5 minutes</string>
+
+    <string name="button_start">Start logging</string>
+    <string name="button_stop">Stop logging</string>
+    <string name="button_capability">Show capability report</string>
+    <string name="button_share">Share current log file</string>
+    <string name="button_background">Allow logging in the background</string>
+
+    <string name="status_idle">Status: not logging.</string>
+    <string name="status_logging">Status: logging in %1$s mode. Signal trust assessment is not part of this version.</string>
+    <string name="status_need_fine">Precise location is needed to read satellite measurements. Please allow precise location.</string>
+    <string name="status_start_failed">Logging could not start. Check that precise location is allowed.</string>
+
+    <string name="live_satellites">Satellites: %1$s</string>
+    <string name="live_cn0_l1">Median signal strength, L1 band: %1$s</string>
+    <string name="live_cn0_l5">Median signal strength, L5 band: %1$s</string>
+    <string name="live_agc">Receiver gain (AGC): L1 %1$s, L5 %2$s</string>
+    <string name="live_clock">Clock discontinuities: %1$s</string>
+    <string name="unit_dbhz">%1$s dB-Hz</string>
+    <string name="unit_db">%1$s dB</string>
+    <string name="value_none">none</string>
+    <string name="live_waiting">No measurements yet. Satellite data can take a minute to arrive, and needs a view of the sky.</string>
+
+    <string name="battery_none">No battery summary yet. It appears after a few minutes of logging.</string>
+    <string name="battery_summary">Session: %1$s h, %2$s mAh, %3$s %% used, about %4$s %% per day.</string>
+    <string name="battery_invalid">The phone was charging during this session, so the battery figures are not valid.</string>
+    <string name="battery_too_short">Too short to extrapolate to a full day yet.</string>
+
+    <string name="file_none">No log file yet.</string>
+    <string name="file_current">File: %1$s</string>
+    <string name="share_chooser_title">Export log file</string>
+    <string name="share_failed">The log file could not be shared.</string>
+
+    <!-- Capability report -->
+    <string name="capability_title">Capability report</string>
+    <string name="capability_tier">Device tier: %1$s</string>
+    <string name="capability_none">No report yet. Start logging and wait for satellite measurements.</string>
+    <string name="dialog_close">Close</string>
+
+    <!-- Background location -->
+    <string name="background_title">Background location</string>
+    <string name="background_body">Logging already continues with the screen off while the SpoofNet notification is shown. Some phones still cut location access for apps that are not on screen. Choosing \"Allow all the time\" on the next screen prevents that.\n\nThis is optional. The data still stays on the phone.</string>
+    <string name="background_continue">Continue</string>
+    <string name="background_not_now">Not now</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Logging</string>
+    <string name="notification_channel_description">Shown while SpoofNet is recording satellite signal quality.</string>
+    <string name="notification_title">SpoofNet is listening</string>
+    <string name="notification_text">Recording satellite signal quality to a file on this phone. Nothing is transmitted.</string>
+    <string name="notification_stop">Stop</string>
+</resources>
