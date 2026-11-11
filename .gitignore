@@ -10,3 +10,8 @@ android/.gradle/
 android/**/build/
 android/local.properties
 .idea/
+data/
+results/cache_net/
+results/demo.sqlite
+spoofnet.egg-info/
+results/*.log

@@ -1,0 +1,16 @@
+[project]
+name = "spoofnet"
+version = "0.1.0"
+description = "Passive detection and mapping of GNSS jamming and spoofing from phone raw measurements"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26", "scipy>=1.11"]
+
+[project.optional-dependencies]
+server = ["fastapi", "uvicorn"]
+dev = ["pytest", "matplotlib"]
+
+[tool.setuptools.packages.find]
+include = ["spoofnet*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

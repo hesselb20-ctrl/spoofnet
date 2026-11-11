@@ -9,6 +9,30 @@ development exists only as numbers in a software replay.
 This document is the contract for the build. Section 13 says how each target is
 measured. Section 14 lists what the design cannot do.
 
+## 0. Prior art, and what is new here
+
+Checked on 11 November 2026.
+
+| Work | What it established | What SpoofNet takes from it |
+|---|---|---|
+| Olsson, Nilsson, Axell, Larsson, Papadimitratos, [arXiv 2305.02038](https://arxiv.org/abs/2305.02038) | Phones can jointly detect and locate a jammer from C/N0. Median error 50 m at path-loss exponent 2, worse at higher exponents, with a Samsung S20+ driven by a signal simulator. The phone's AGC output was too noisy for positioning. | Localisation uses C/N0 loss, not AGC. AGC is used for detection only, and only where it is seen to work. |
+| Rustamov, Minetto, Dovis (Politecnico di Torino) | Android phones can be spoofed, and checks on raw measurements can reveal it. | The raw-measurement spoofing checks in section 5.3. |
+| Sensors 2018, 18(12), 4130 | Raw measurements have been available on Android since 2017; crowdsourced detection was proposed for aviation and Baltic maritime awareness. | The crowdsourcing premise. |
+| Google, [Detect GNSS jamming and spoofing](https://developer.android.com/develop/sensors-and-location/sensors/gnss-spoof-jam) | GnssLogger's Spoof/Jam tab: C/N0 and AGC falling together suggests jamming; C/N0 rising while AGC falls suggests spoofing; GNSS time is compared with network time. Google calls it experimental and says it does not catch every case. | The same single-device cues. They are the starting point, not the product. |
+| Tegedor, Piccolo, Gioia, Barbero (JRC), [Jammertest 2025 paper](https://publications.jrc.ec.europa.eu/repository/handle/JRC144749) | A research app (CrowdShield) using AGC on dual-frequency phones detected jamming and meaconing in static, motorcade and airborne tests, and complemented ADS-B in the airborne case. | Field evidence that the AGC cue works on real hardware. Also the nearest thing to a competitor: a public-sector research effort with the same idea. |
+| Flightradar24 interference layer, [GPSJam](https://gpsjam.org/faq/) | Daily maps from aircraft ADS-B navigation accuracy. No ground or sea-level view. Blank cells mean no data. | The cross-check layer, and the "no data is not clean" rule. |
+
+The Torino and Sensors rows are quoted from the project brief; those two papers
+were not re-read for this document. The other rows were opened and checked.
+
+What this project adds: a measured false-alarm rate across everyday
+obstructions; detection on phones without AGC through band selectivity;
+spoofing and meaconing checks combined into one score; multi-device source
+localisation with honest uncertainty; a privacy design in which tracks never
+leave the phone; and a map that draws ignorance as ignorance. No commercial
+phone-based service was found, but the JRC work shows the idea is under active
+public research, so "nobody else is doing this" would be false.
+
 ## 1. Evidence labels
 
 Every number in a report, a commit message, the API and the map carries one of
@@ -190,9 +214,17 @@ The jamming sub-score rises with:
 3. an AGC drop on the same band at the same time, when the device has working
    AGC,
 4. loss of satellites that follows C/N0 order (weakest first),
-5. agreement or disagreement between bands, reported as a reason code
-   (`BAND_L1_ONLY`, `BAND_ALL`), and
+5. **band selectivity**: a larger drop on the L1 carrier than on the
+   neighbouring GLONASS G1 and BeiDou B1 carriers, or than on L5/E5a
+   (`BAND_SELECTIVE`, `BAND_L1_ONLY`, `BAND_ALL`), and
 6. no `handling` event in the preceding seconds.
+
+Item 5 is the strongest single cue on phones without AGC. Obstruction is flat
+across carriers that are tens of MHz apart; most interference sources are not.
+It is available on every phone that tracks GLONASS, including single-frequency
+ones. Its limit is a source that covers every band evenly: on a phone without
+AGC that looks like the phone being put in a metal box, and items 2 and 6 are
+all that is left.
 
 Obstruction (tunnel, building, foliage, body, metal roof) is the main confuser.
 It differs in items 2 and 3: blockage is direction-dependent, so the spread is
@@ -237,11 +269,14 @@ Sub-scores are combined by logistic regression, one model per class (`jam`,
 Calibration is checked on held-out scenarios with a reliability table and the
 Brier score, and the result is reported.
 
-Missing evidence is handled explicitly: each sub-score comes with an
-"available" flag, and the fused model is fitted per capability profile (with or
-without AGC, with or without dual frequency, with or without network position
-and ephemeris). A tier C phone at sea therefore gets a model that was fitted
-without AGC and network position, not a model that silently treats them as zero.
+Missing evidence is handled explicitly. The jamming model is fitted separately
+for phones with working AGC and phones without, and each of the two has its own
+event threshold and its own false-alarm budget, because the evidence available
+to them differs in kind and one shared threshold serves neither. Within a
+profile, absent inputs (no second band, no network position) contribute zero
+evidence and the model carries a flag for their presence. The first version of
+the detector used one model for all phones; its measured failure is recorded in
+`results/m2_detector_v1_first_attempt.json`.
 
 ### 5.6 Event state machine
 
@@ -277,8 +312,12 @@ Mechanisms:
    drop. Obstruction almost never produces one.
 5. **AGC gate.** When AGC works, a C/N0 drop without an AGC change is treated as
    obstruction.
-6. **Handling gate.** Evidence is discounted for a few seconds after a tilt
-   change.
+6. **Handling gate.** After a tilt change (the phone was pocketed, mounted or
+   carried into a vehicle) the baselines do not freeze. They re-settle on the
+   new placement with a 20 s time constant for 60 s. A source that switches on
+   inside that minute is detected late or not at all; that is the price.
+   AGC evidence only freezes a baseline together with a C/N0 effect, so thermal
+   AGC drift cannot hold a freeze open.
 7. **Clock discontinuity gate.** Clock innovations are ignored when the hardware
    clock discontinuity counter changes, and steps within a few metres of a whole
    number of milliseconds are treated as receiver clock steering.
@@ -349,11 +388,15 @@ show how real phones behave. Only section 11 can do that.
 
 Code: `spoofnet/net`.
 
-**Clustering.** Events are bucketed into H3 res 8 cells and 30 s time slices.
-Buckets are connected when their cells are within 2 rings and their time slices
-touch. Connected components are incident candidates. A candidate becomes an
-incident when it has events from at least `K_min` distinct tokens with a summed
-tier weight above a threshold.
+**Clustering.** Two events are linked when their H3 res 7 cells are within 2
+rings of each other (about 5 km) and their time intervals overlap within 30 s.
+Events that report the same claimed position are linked regardless of distance.
+Connected components are incident candidates. A candidate becomes an incident
+when it has alarm events (`jam`, `spoof` or `meacon`) from at least `K_min = 3`
+distinct tokens with a summed tier weight of at least 1.2, so three tier C
+phones are the minimum. `loss_unknown` events never create an incident on their
+own: several cars losing GNSS in one tunnel is not interference. They do add
+"at least this strong" observations to an incident that other devices opened.
 
 **Affected area.** The union of event cells, grown by one ring, minus cells
 where devices were present and clean during the incident. Cells with no
