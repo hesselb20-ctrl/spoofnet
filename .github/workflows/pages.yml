@@ -1,0 +1,49 @@
+# Publishes the landing page, the demo map and the media to GitHub Pages.
+#   /        site/index.html (explainer video, status, links)
+#   /map/    web/ (the map, with its static snapshot of simulated incidents)
+#   /media/  docs/media/ (video, preview, images)
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "web/**"
+      - "docs/media/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble the site
+        run: |
+          mkdir -p _site/map _site/media
+          cp -r site/. _site/
+          cp -r web/. _site/map/
+          cp docs/media/* _site/media/
+          touch _site/.nojekyll
+          test -f _site/index.html
+          test -f _site/map/data/meta.json
+          test -f _site/media/spoofnet-tutorial.mp4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

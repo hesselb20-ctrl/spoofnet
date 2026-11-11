@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SpoofNet: a ground-level map of GPS jamming and spoofing</title>
+  <meta name="description" content="SpoofNet detects GPS and GNSS jamming and spoofing from the raw measurements ordinary Android phones already make. Passive only. Research prototype.">
+  <meta property="og:title" content="SpoofNet">
+  <meta property="og:description" content="A ground-level map of GPS jamming and spoofing, from the phones already there. Passive detection only. Research prototype.">
+  <meta property="og:image" content="media/banner.png">
+  <meta name="color-scheme" content="dark">
+  <style>
+    :root {
+      --bg: #0b1017; --panel: #121a25; --line: #26364a; --text: #eef2f7; --dim: #93a4b8;
+      --accent: #4c9bff; --ok: #3fbf7f; --warn: #f2b84b; --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      margin: 0; color: var(--text); background: var(--bg);
+      font: 17px/1.55 "Segoe UI", Inter, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    main { max-width: 1040px; margin: 0 auto; padding: clamp(28px, 6vw, 72px) 20px 64px; }
+    h1 { font-size: clamp(44px, 9vw, 84px); line-height: 1; letter-spacing: -0.03em; margin: 0; font-weight: 700; }
+    .tagline { font-size: clamp(20px, 3.2vw, 28px); line-height: 1.3; margin: 18px 0 0; max-width: 26em; }
+    .note { color: var(--dim); margin: 12px 0 0; }
+    .film { margin: 36px 0 0; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #000; }
+    video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--bg); }
+    .caption { color: var(--dim); font-size: 15px; margin: 12px 4px 0; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 30px 0 0; }
+    .button {
+      display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; border-radius: 999px;
+      font-weight: 600; text-decoration: none; border: 1.5px solid var(--line); color: var(--text); background: var(--panel);
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+    .button.primary { background: var(--accent); border-color: var(--accent); color: #06101d; }
+    .button:hover { border-color: var(--accent); }
+    .button:active { transform: scale(0.97); }
+    .button:focus-visible, a:focus-visible, video:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    h2 { font-size: 15px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 56px 0 14px; font-weight: 600; }
+    .status { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+    .status li {
+      display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: start; padding: 16px 18px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    }
+    .mark { width: 24px; height: 24px; margin-top: 2px; border-radius: 50%; border: 2.5px solid var(--ok); position: relative; }
+    .mark.done::after {
+      content: ""; position: absolute; left: 6px; top: 2px; width: 6px; height: 11px;
+      border: solid var(--ok); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+    }
+    .mark.open { border-color: var(--warn); border-style: dashed; }
+    .status span { color: var(--dim); display: block; font-size: 15px; margin-top: 2px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+    .card strong { display: block; margin-bottom: 6px; }
+    .card p { margin: 0; color: var(--dim); font-size: 15.5px; }
+    a { color: var(--accent); }
+    footer { color: var(--dim); font-size: 14px; margin-top: 56px; border-top: 1px solid var(--line); padding-top: 20px; }
+    @media (prefers-reduced-motion: reduce) { .button { transition: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>SpoofNet</h1>
+      <p class="tagline">A ground-level map of GPS jamming and spoofing, from the phones already there.</p>
+      <p class="note">Passive detection only: it listens and never transmits. Research prototype.</p>
+    </header>
+
+    <section aria-label="Explainer video">
+      <div class="film">
+        <video controls playsinline preload="metadata" poster="media/01-gap.png" aria-describedby="film-caption">
+          <source src="media/spoofnet-tutorial.mp4" type="video/mp4">
+          Your browser cannot play this video. <a href="media/spoofnet-tutorial.mp4">Download it</a> instead.
+        </video>
+      </div>
+      <p class="caption" id="film-caption">
+        72 seconds, no sound. All of it is on-screen text, and the same story is told in pictures in the
+        <a href="https://github.com/hesselb20-ctrl/spoofnet#how-it-works">project README</a>.
+      </p>
+      <div class="actions">
+        <a class="button primary" href="map/">Open the demo map</a>
+        <a class="button" href="https://github.com/hesselb20-ctrl/spoofnet">Code and results on GitHub</a>
+      </div>
+      <p class="note">The demo map shows simulated incidents only, and says so on the map.</p>
+    </section>
+
+    <section>
+      <h2>The idea</h2>
+      <div class="grid">
+        <div class="card"><strong>Maps today see the sky</strong><p>Public interference maps are built from aircraft reports. Ports, shipping lanes, roads and fields stay blank.</p></div>
+        <div class="card"><strong>Phones already listen</strong><p>Every Android phone reports signal strength per satellite, receiver gain and clock. That is enough to tell a jammer from a roof.</p></div>
+        <div class="card"><strong>Detection stays on the phone</strong><p>Only events and coarse map cells are uploaded. Tracks never leave the device.</p></div>
+        <div class="card"><strong>No data is never "clean"</strong><p>Where there are no phones, the map says so, and every incident shows its confidence and coverage.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Where it stands, November 2026</h2>
+      <ul class="status">
+        <li><i class="mark done" aria-hidden="true"></i><div>Works in software replay<span>Detectors, multi-phone localisation, API and map, measured on simulated phones.</span></div></li>
+        <li><i class="mark done" aria-hidden="true"></i><div>One real observation<span>On a public log of one flight, the detector's single alarm matches the aircraft-based map cell by cell.</span></div></li>
+        <li><i class="mark open" aria-hidden="true"></i><div>Not yet validated at ground or sea level<span>No detection rate can be quoted from real data.</span></div></li>
+        <li><i class="mark open" aria-hidden="true"></i><div>Phone app written, not yet built or field-tested<span>There are no contributors and no live data.</span></div></li>
+      </ul>
+      <p class="note">Measured numbers, and what failed, are in the
+        <a href="https://github.com/hesselb20-ctrl/spoofnet/blob/main/REPORT.md">report</a>.</p>
+    </section>
+
+    <footer>
+      Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors. Sea marks © OpenSeaMap.
+      Real-phone logs: Takiguchi Medina and Lohan, Zenodo 10.5281/zenodo.14712684 (CC BY 4.0).
+    </footer>
+  </main>
+</body>
+</html>
