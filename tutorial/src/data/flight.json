@@ -1,0 +1,156 @@
+{
+ "source": "results/m6_flight.json (events and track only)",
+ "events": [
+  {
+   "type": "jam",
+   "minute_start": 40.2,
+   "minute_end": 62.6
+  }
+ ],
+ "track": [
+  {
+   "minute": 0,
+   "lat": 56.92,
+   "alt_m": 29,
+   "cn0_top3_change_db": 1.9,
+   "agc_change_db": -0.3,
+   "adsb_aircraft": 99,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 5,
+   "lat": 56.92,
+   "alt_m": 31,
+   "cn0_top3_change_db": 0.9,
+   "agc_change_db": -0.2,
+   "adsb_aircraft": 99,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 10,
+   "lat": 56.92,
+   "alt_m": 31,
+   "cn0_top3_change_db": -0.8,
+   "agc_change_db": 0.2,
+   "adsb_aircraft": 99,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 15,
+   "lat": 56.92,
+   "alt_m": 35,
+   "cn0_top3_change_db": -2.4,
+   "agc_change_db": 0.5,
+   "adsb_aircraft": 99,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 20,
+   "lat": 56.92,
+   "alt_m": 38,
+   "cn0_top3_change_db": 0.0,
+   "agc_change_db": 0.1,
+   "adsb_aircraft": 99,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 25,
+   "lat": 56.92,
+   "alt_m": 36,
+   "cn0_top3_change_db": -3.7,
+   "agc_change_db": 0.1,
+   "adsb_aircraft": 99,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 30,
+   "lat": 57.11,
+   "alt_m": 1888,
+   "cn0_top3_change_db": 1.0,
+   "agc_change_db": 0.6,
+   "adsb_aircraft": null,
+   "adsb_low_accuracy_share": null
+  },
+  {
+   "minute": 35,
+   "lat": 57.55,
+   "alt_m": 4936,
+   "cn0_top3_change_db": -0.4,
+   "agc_change_db": -0.0,
+   "adsb_aircraft": 69,
+   "adsb_low_accuracy_share": 0.058
+  },
+  {
+   "minute": 40,
+   "lat": 58.08,
+   "alt_m": 7059,
+   "cn0_top3_change_db": -7.7,
+   "agc_change_db": -5.0,
+   "adsb_aircraft": 91,
+   "adsb_low_accuracy_share": 0.176
+  },
+  {
+   "minute": 45,
+   "lat": 58.65,
+   "alt_m": 8214,
+   "cn0_top3_change_db": -8.1,
+   "agc_change_db": -4.4,
+   "adsb_aircraft": 73,
+   "adsb_low_accuracy_share": 0.151
+  },
+  {
+   "minute": 50,
+   "lat": 59.26,
+   "alt_m": 8186,
+   "cn0_top3_change_db": -10.2,
+   "agc_change_db": -6.3,
+   "adsb_aircraft": 113,
+   "adsb_low_accuracy_share": 0.239
+  },
+  {
+   "minute": 55,
+   "lat": 59.84,
+   "alt_m": 8135,
+   "cn0_top3_change_db": -10.1,
+   "agc_change_db": -5.4,
+   "adsb_aircraft": 118,
+   "adsb_low_accuracy_share": 0.195
+  },
+  {
+   "minute": 60,
+   "lat": 60.44,
+   "alt_m": 7194,
+   "cn0_top3_change_db": -3.3,
+   "agc_change_db": -3.3,
+   "adsb_aircraft": 68,
+   "adsb_low_accuracy_share": 0.029
+  },
+  {
+   "minute": 65,
+   "lat": 60.97,
+   "alt_m": 3714,
+   "cn0_top3_change_db": -3.0,
+   "agc_change_db": 0.3,
+   "adsb_aircraft": 17,
+   "adsb_low_accuracy_share": 0.0
+  },
+  {
+   "minute": 70,
+   "lat": 61.37,
+   "alt_m": 1463,
+   "cn0_top3_change_db": -1.7,
+   "agc_change_db": 0.3,
+   "adsb_aircraft": 21,
+   "adsb_low_accuracy_share": 0.048
+  },
+  {
+   "minute": 75,
+   "lat": 61.44,
+   "alt_m": 494,
+   "cn0_top3_change_db": -2.1,
+   "agc_change_db": 0.5,
+   "adsb_aircraft": 21,
+   "adsb_low_accuracy_share": 0.048
+  }
+ ]
+}

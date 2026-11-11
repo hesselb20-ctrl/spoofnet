@@ -10,8 +10,10 @@ android/.gradle/
 android/**/build/
 android/local.properties
 .idea/
-data/
+/data/
 results/cache_net/
 results/demo.sqlite
 spoofnet.egg-info/
 results/*.log
+tutorial/out/
+tutorial/package-lock.json

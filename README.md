@@ -1,5 +1,7 @@
 # SpoofNet
 
+![SpoofNet: a ground-level map of GPS jamming and spoofing, from the phones already there. Passive detection only. Research prototype.](docs/media/banner.png)
+
 A ground-level map of GPS/GNSS jamming and spoofing, built from the raw
 satellite measurements that ordinary Android phones expose.
 
@@ -7,6 +9,73 @@ Today's public interference maps are built from aircraft reports, so they see
 the sky. SpoofNet is meant to see ports, shipping lanes, roads, fields and
 sites. It is **passive detection only**: nothing here transmits, and every
 interference signal used in development exists only in software.
+
+## The idea in 72 seconds
+
+[![Three scenes from the explainer: how a jammer differs from a roof, how several phones locate a source, and the one real flight.](docs/media/spoofnet-preview.gif)](docs/media/spoofnet-tutorial.mp4)
+
+The clip shows three of nine scenes. The full explainer is
+[docs/media/spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4): 72
+seconds, no sound, every statement on screen checked against this repository.
+It is rendered from code in [tutorial/](tutorial/README.md).
+
+## How it works, in pictures
+
+**1. The gap.** Public interference maps are built from what aircraft report.
+They show the sky. What happens in a port, on a road or in a field is blank.
+
+![Top: a row of map cells filled in from aircraft reports, four of them marked as affected. Bottom: a port crane, a ship, a truck and a tractor under a hatched band labelled "ground and sea level: no data".](docs/media/01-gap.png)
+
+**2. Phones already measure the satellites.** Every second an Android phone
+reports the signal strength of each satellite it hears, its receiver gain
+(AGC) and its clock. SpoofNet only listens to that. It never transmits.
+
+![A phone under an arc of satellites, and a panel with one signal-strength bar per satellite, a receiver gain meter and a clock reading.](docs/media/02-phone.png)
+
+**3. A jammer or just a roof?** Jamming adds power: every satellite falls by
+the same amount and the receiver turns its gain down. A roof blocks unevenly
+and adds nothing. A phone with no gain reading cannot tell the two apart, so
+it reports "unknown loss" instead of guessing.
+
+![Two panels. Jamming: all bars equally low, gain low, alarm. Under a roof: bars uneven, gain unchanged, no alarm.](docs/media/03-jamming.png)
+
+**4. Spoofing leaves fingerprints.** One transmitter makes all satellites look
+equally strong. Position or time jumps. Constellations that were not spoofed
+stop agreeing with the ones that were.
+
+![Left: a map where GPS reports a position far from where the phone is, while Galileo still agrees. Right: uniform signal bars, a clock offset step, and four evidence labels.](docs/media/04-spoofing.png)
+
+**5. Privacy by construction.** Detection runs on the phone. Raw measurements,
+positions and tracks stay there. What leaves is an event: a type, a coarse map
+cell and a score, under a token that changes every day.
+
+![A phone holding a track and a lock, and a small card with type, coarse cell and score travelling to an aggregation server.](docs/media/05-privacy.png)
+
+**6. Many phones make an incident.** Three or more phones in one area open an
+incident. Phones nearer the source lose more signal, and that pattern points to
+where it is, with an uncertainty ellipse. The figures on the image are from
+simulation.
+
+![A hex map with ten phones showing losses from 6 to 14 dB around an estimated source with a dashed uncertainty ellipse.](docs/media/06-network.png)
+
+**7. An honest map.** Where there are no phones the map says "no data". It
+never draws that as clean.
+
+![A hex map: orange incident cells inside green covered cells, everything else hatched as no data.](docs/media/07-map.png)
+
+The running map, here with simulated incidents and labelled as such (map data
+© OpenStreetMap contributors):
+
+![Screenshot of the SpoofNet web map near Gdansk: hatched no-data veil, green coverage cells, an incident popup showing confidence, device count band, coverage and the evidence label "software replay".](docs/media/map-screenshot.jpg)
+
+**8. The one real observation so far.** On a public log of a flight from Riga
+to Tampere on 22 March 2024, the detector raised one jamming event. It covers
+the same map cells where 15 to 24 % of aircraft reported low accuracy that
+day, and nothing else. One phone, one flight, at 8 km altitude: an
+observation, not a validation. Details in
+[docs/validation/real_world.md](docs/validation/real_world.md).
+
+![A chart along the flight: the phone's signal strength and receiver gain both dip over Estonia and the Gulf of Finland, the detector's jamming event spans that dip, and bars show 18, 15, 24 and 20 percent of aircraft reporting low accuracy in the same cells.](docs/media/08-flight.png)
 
 ## Status, 11 November 2026
 
@@ -48,6 +117,8 @@ spoofnet/replay     replay harness, calibration, scoring
 spoofnet/net        H3 cells, privacy, events, clustering, localisation, ADS-B cross-check
 spoofnet/server     storage, publication rules, HTTP API
 web/                static map (MapLibre GL, OpenStreetMap, OpenSeaMap)
+tutorial/           the explainer video and the images above, as code (Remotion)
+docs/media/         the rendered video, preview clip and images
 experiments/        the scripts that produce every reported number
 results/            their output
 config/             detector.json and real_tails.json (fitted, never hand-edited), publication_rules.json
