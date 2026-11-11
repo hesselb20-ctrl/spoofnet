@@ -247,9 +247,21 @@ Sub-scores, each with its own reason code:
 | `BAND_DISAGREE` | L1-only and L5-only solutions disagree | ephemeris, dual frequency |
 | `NETLOC_MISMATCH` | GNSS fix far from the network position | network fix |
 | `POS_JUMP` | fix displacement beyond what the IMU and a speed limit allow | - |
-| `DOPPLER_IMU` | Doppler speed against IMU motion, both directions | IMU |
+| `DOPPLER_IMU` | Doppler speed against IMU motion, both directions. **Computed and logged, but not part of the score** (see below) | IMU |
 | `ALMANAC_SKY` | tracked satellites that should be below the horizon | almanac |
 | `RESIDUALS` | pseudorange residual RMS far above baseline | ephemeris |
+
+**Why the Doppler-against-IMU checks are out of the score.** They worked in
+replay and failed on first contact with real logs. On the two public logs with
+usable sensor data (a bike ride and a flight, no spoofing in either) they sat at
+9 to 12 times the simulated 99th percentile. Two reasons, both physics rather
+than tuning. An accelerometer cannot see constant velocity, so a phone resting
+in a ferry, a train or a plane is "at rest" while Doppler rightly says it
+moves. And the motion summary separates gravity from acceleration with a 2 s
+low-pass, so sustained acceleration (a take-off roll) leaks into the gravity
+estimate and disappears. A usable version needs gyro-stabilised integration
+over short windows and a per-device sensor noise floor. Until that exists and
+has been tried on real logs, these checks stay as logged diagnostics.
 
 ### 5.4 Meaconing
 
@@ -283,8 +295,11 @@ the detector used one model for all phones; its measured failure is recorded in
 An event opens when the class probability stays above `p_on` for `k_on` of the
 last `m_on` seconds, and closes after `t_off` seconds below `p_off`. Events
 closer than `t_merge` are merged. `p_on`, `k_on` and `m_on` are chosen on replay
-validation data to meet the false-alarm budget, then frozen and measured once on
-the test split. No threshold in this repository is set by hand: each one is
+validation data: among the rules that raise no false alarm on the clean
+validation hours, the strictest one within three points of the best detection
+rate is taken. The rule is then frozen and measured on the test split. The
+jamming rule is chosen per capability profile for moderate jamming; the
+spoofing rule is chosen for all five spoofing classes together. No threshold in this repository is set by hand: each one is
 written by `experiments/calibrate.py` into `config/detector.json` with the data
 that produced it.
 
@@ -325,6 +340,15 @@ Mechanisms:
    not forced to choose between a missed jammer and a false alarm in a tunnel.
 9. **Server-side corroboration.** A public incident needs `K` independent
    contributors (section 9), which also suppresses single-device false alarms.
+10. **Normal ranges cover real phones.** Every quantity the detector uses is
+    normalised by its clean tail. That tail is the wider of two measurements:
+    simulated clean data, and real clean phone logs
+    (`experiments/m6_real_tails.py`, `config/real_tails.json`). Real logs can
+    only widen a range, never narrow it. The first run on real logs showed why
+    this is needed: the detector fitted on simulated data alone raised a
+    continuous false spoofing alarm on a clean ferry log. Real phones report
+    elevation in whole degrees (44 times the simulated tail), and their network
+    position, clock drift and AGC stray 3 to 5 times further than simulated.
 
 The false-alarm rate is reported twice: per device (target metric) and per
 published incident.
@@ -512,7 +536,8 @@ counsel before launch.
    interference region or an announced exercise, compared with official notices
    and ADS-B-derived maps for the same place and time. Labelled `real`. Reports
    state the number of events, devices and hours, and never extrapolate a
-   detection rate from a handful of events.
+   detection rate from a handful of events. So far this is one public log of
+   one flight (`docs/validation/real_world.md`); nothing at ground level.
 
 A detector configuration is called "validated on real-world data" only after
 step 3.
@@ -550,7 +575,7 @@ config/          detector.json, publication_rules.json
 | Spoofing detection rate, consistent-pseudorange | >= 85 % | >= 95 % | Test-split `simple` and `multi` scenarios. Detected when a `spoof` or `meacon` event opens during the attack. Other attack types are reported separately. |
 | False alarms per device-hour | < 0.01 | < 0.001 | Events of any class that open outside an attack, over all clean test hours across every environment. Upper 95 % bound reported. |
 | Time to detect, network | <= 60 s | <= 10 s | Multi-device simulation: interference onset to incident creation, including upload latency. Median and 90th percentile. |
-| Source localisation median error, 10+ devices | <= 500 m | <= 100 m | Multi-device simulation with known source positions, shadow fading and several path-loss exponents. Median and ellipse coverage. |
+| Source localisation median error, 10+ devices | <= 500 m | <= 100 m | Multi-device simulation with known source positions, shadow fading and several path-loss exponents. N phones (10, 20 or 40) inside the zone where the loss is about 6 dB or more, off-centre and in four cases out of ten all on one side of the source, plus N/3 further out. Every phone runs the full detector; the server sees only what they upload. Median and ellipse coverage. |
 | Battery cost of background logging | < 5 %/day | < 2 %/day | On a real phone only: charge counter over at least 8 h per mode. Not measurable in replay. |
 
 ## 14. Known limits

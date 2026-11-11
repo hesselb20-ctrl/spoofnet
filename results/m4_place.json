@@ -1,0 +1,68 @@
+{
+ "evidence": "replay",
+ "routes_per_env": 12,
+ "learn_days": 3,
+ "eval_days": 3,
+ "by_env": {
+  "tunnel_car": {
+   "eval_hours": 11.1,
+   "loss_unknown_per_hour_without_table": 5.405405405405404,
+   "loss_unknown_per_hour_with_table": 0.27027027027027023,
+   "alarms_without_table": 0,
+   "alarms_with_table": 0,
+   "alarms_marked_place_history": 0,
+   "jam_runs": 11,
+   "jam_detected_without_table": 9,
+   "jam_detected_with_table": 9,
+   "routes_with_a_learned_loss_place": 10
+  },
+  "garage": {
+   "eval_hours": 11.1,
+   "loss_unknown_per_hour_without_table": 1.5315315315315314,
+   "loss_unknown_per_hour_with_table": 0.18018018018018014,
+   "alarms_without_table": 0,
+   "alarms_with_table": 0,
+   "alarms_marked_place_history": 0,
+   "jam_runs": 12,
+   "jam_detected_without_table": 11,
+   "jam_detected_with_table": 11,
+   "routes_with_a_learned_loss_place": 5
+  },
+  "urban_car": {
+   "eval_hours": 11.1,
+   "loss_unknown_per_hour_without_table": 0.5405405405405405,
+   "loss_unknown_per_hour_with_table": 0.3603603603603603,
+   "alarms_without_table": 0,
+   "alarms_with_table": 0,
+   "alarms_marked_place_history": 0,
+   "jam_runs": 12,
+   "jam_detected_without_table": 6,
+   "jam_detected_with_table": 6,
+   "routes_with_a_learned_loss_place": 10
+  },
+  "forest_car": {
+   "eval_hours": 11.1,
+   "loss_unknown_per_hour_without_table": 0.27027027027027023,
+   "loss_unknown_per_hour_with_table": 0.18018018018018014,
+   "alarms_without_table": 0,
+   "alarms_with_table": 0,
+   "alarms_marked_place_history": 0,
+   "jam_runs": 12,
+   "jam_detected_without_table": 11,
+   "jam_detected_with_table": 11,
+   "routes_with_a_learned_loss_place": 7
+  },
+  "all": {
+   "eval_hours": 44.4,
+   "loss_unknown_per_hour_without_table": 1.9369369369369367,
+   "loss_unknown_per_hour_with_table": 0.24774774774774772,
+   "alarms_without_table": 0,
+   "alarms_with_table": 0,
+   "alarms_marked_place_history": 0,
+   "jam_runs": 47,
+   "jam_detected_without_table": 37,
+   "jam_detected_with_table": 37,
+   "routes_with_a_learned_loss_place": 32
+  }
+ }
+}

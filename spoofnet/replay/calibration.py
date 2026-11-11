@@ -74,9 +74,9 @@ def _rows(r, which: str):
     return clean, pos
 
 
-def fit_models(train: list, l2: float = 1e-2, with_spoof: bool = True):
+def fit_models(train: list, l2: float = 1e-2, with_spoof: bool = True, real_tails: dict | None = None):
     clean_frames = [(r["x"].astype(float), _rows(r, "jam")[0]) for r in train]
-    norm = fusion.fit_norm(clean_frames)
+    norm = fusion.fit_norm(clean_frames, real_tails)
     xj, yj = {p: [] for p in PROFILES}, {p: [] for p in PROFILES}
     xs, ys, xm, ym = [], [], [], []
     for r in train:

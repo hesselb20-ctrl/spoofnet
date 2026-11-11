@@ -134,6 +134,8 @@ def write_log(ms: MeasurementSet, path, almanac: dict | None = None, week: int =
 # ------------------------------------------------------------------------------------------
 
 GAL_E1C_2ND_CODE = 2048
+NET_HOLD_S = 120
+MIN_IMU_HZ = 10
 _RAW_INT = ("TimeNanos", "FullBiasNanos", "HardwareClockDiscontinuityCount", "Svid", "State", "ReceivedSvTimeNanos",
             "ConstellationType")
 _RAW_FLT = ("utcTimeMillis", "BiasNanos", "TimeOffsetNanos", "Cn0DbHz", "PseudorangeRateMetersPerSecond",
@@ -259,7 +261,7 @@ def _const_index(c: np.ndarray) -> np.ndarray:
 def imu_summary(acc: np.ndarray, gyr: np.ndarray, utc0: float, n: int) -> dict:
     """The 1 Hz motion summary of DESIGN.md 5.1 from raw accelerometer and gyroscope
     samples (rows: utc ms, x, y, z). Mirrors ImuSummarizer.kt."""
-    out = {k: np.zeros(n) for k in ("vib", "acc_h", "yaw", "tilt")}
+    out = {k: np.full(n, np.nan) for k in ("vib", "acc_h", "yaw", "tilt")}
     if len(acc) < 10:
         return out
     k = np.rint((acc[:, 0] - utc0) / 1000.0).astype(int)
@@ -285,7 +287,9 @@ def imu_summary(acc: np.ndarray, gyr: np.ndarray, utc0: float, n: int) -> dict:
     horiz = lin - np.sum(lin * unit, axis=1, keepdims=True) * unit
     out["acc_h"] = np.where(have, np.linalg.norm(horiz, axis=1), 0.0)
     cosang = np.clip(np.sum(unit[1:] * unit[:-1], axis=1), -1.0, 1.0)
+    out["tilt"] = np.zeros(n)
     out["tilt"][1:] = np.degrees(np.arccos(cosang))
+    out["yaw"] = np.zeros(n)
     if len(gyr) >= 10:
         kg = np.rint((gyr[:, 0] - utc0) / 1000.0).astype(int)
         okg = (kg >= 0) & (kg < n) & np.all(np.isfinite(gyr[:, 1:]), axis=1)
@@ -293,6 +297,11 @@ def imu_summary(acc: np.ndarray, gyr: np.ndarray, utc0: float, n: int) -> dict:
         cg = np.bincount(kg, minlength=n).astype(float)
         about_g = np.sum(w * unit[kg], axis=1)
         out["yaw"] = np.bincount(kg, weights=about_g, minlength=n) / np.maximum(cg, 1)
+    # Vibration within a second needs several samples in it. Logs made with sensors at a low
+    # rate would otherwise read as "perfectly still".
+    enough = cnt >= MIN_IMU_HZ
+    for name in out:
+        out[name] = np.where(enough, out[name], np.nan)
     return out
 
 
@@ -405,7 +414,10 @@ def read_log(path) -> MeasurementSet:
             sp_, br_ = (speed if np.isfinite(speed) else 0.0), np.radians(brg if np.isfinite(brg) else 0.0)
             fix_vel[kf] = np.array([sp_ * np.sin(br_), sp_ * np.cos(br_), 0.0]) @ enu_basis(lat, lon)
         elif prov in ("network", "nlp"):
-            net[kf:], net_acc[kf:] = xyz, acc_m             # held until the next update
+            # Held until the next update, but not for ever: with the radios off (flight mode,
+            # open sea) the last network position says nothing about where the phone is now.
+            net[kf:kf + NET_HOLD_S], net_acc[kf:kf + NET_HOLD_S] = xyz, acc_m
+            net[kf + NET_HOLD_S:], net_acc[kf + NET_HOLD_S:] = np.nan, np.nan
 
     sn = p["snimu"]
     if sn["utc"].size:
@@ -419,7 +431,8 @@ def read_log(path) -> MeasurementSet:
         acc = p["imu"]["UncalAccel"] if len(p["imu"]["UncalAccel"]) else p["imu"]["Accel"]
         gyr = p["imu"]["UncalGyro"] if len(p["imu"]["UncalGyro"]) else p["imu"]["Gyro"]
         imu = imu_summary(acc, gyr, utc_first, n)
-        imu_source = "raw samples" if len(acc) >= 10 else "none"
+        share = float(np.isfinite(imu["vib"]).mean())
+        imu_source = "raw samples" if share > 0.5 else "none (too few sensor samples)"
 
     sat_pos = sat_vel = None
     sig_sat = np.zeros(ns, dtype=int)

@@ -1,0 +1,8 @@
+{
+  "name": "spoofnet-h3-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runs the H3 library for Python interpreters that have no h3 build",
+  "type": "commonjs",
+  "dependencies": { "h3-js": "^4.1.0" }
+}

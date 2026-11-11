@@ -57,7 +57,11 @@ def main() -> None:
         # 2 and 3. normalisation and fusion weights
         train = run_many(cal.nominal_jobs("train", range(200), 1800)
                          + cal.attack_jobs("train", classes, range(args.train_atk)), gates, workers=args.workers)
-        norm, jam, spoof, meacon = cal.fit_models(train, with_spoof=any(c in cal.SPOOF_CLASSES for c in classes))
+        tails_file = Path("config/real_tails.json")
+        tails = json.loads(tails_file.read_text()) if tails_file.exists() and args.stage != "m2" else None
+        norm, jam, spoof, meacon = cal.fit_models(train, with_spoof=any(c in cal.SPOOF_CLASSES for c in classes),
+                                                  real_tails=tails["tails"] if tails else None)
+        log["real_tails"] = tails
         log["train"] = {"scenarios": len(train), "nominal_hours": 200 * 0.5, "attacks_per_class": args.train_atk}
         del train
         cfg = DetectorConfig(gates, norm, jam, spoof, meacon=meacon)
@@ -81,6 +85,7 @@ def main() -> None:
             log["val"].update(spoof_rule=cfg.spoof_rule.to_dict(), spoof_candidates=spoof_table)
         del val
         cfg.provenance = {"stage": args.stage, "evidence": "replay", "fitted_on": "simulated train split",
+                          "normal_ranges_widened_by_real_logs": bool(tails),
                           "rules_chosen_on": "simulated val split", "classes": list(classes)}
         cfg.save("config/detector.json")
         log["timing_s"]["rules"] = time.time() - t0

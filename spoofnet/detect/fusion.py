@@ -38,8 +38,12 @@ JAM_TERMS = {
               "zsel_g1", "zsel_b1", "zsel_l5", "zsel_tight", "selloss_g1", "selloss_l5", "eldiff_drop", "has_dual",
               "rise"),
 }
+# The three Doppler-against-IMU terms (sm, am, fm) are computed and logged but are not part of
+# the score. On the two real logs with usable sensor data they sat at 9 to 12 times the
+# simulated 99th percentile with no interference present: a phone resting in a vehicle is
+# "still" to an accelerometer, and sustained acceleration leaks into the gravity estimate.
 SPOOF_TERMS = ("flat", "slope", "flat_t", "flat_tt", "cm", "rise", "clk", "drift", "xpos", "xclk", "xvel", "grpfail", "nloc", "jump",
-               "sm", "am", "fm", "alm", "elmis", "agc_mismatch", "flat_cm", "handling", "has_net", "has_dual",
+               "alm", "elmis", "agc_mismatch", "flat_cm", "handling", "has_net", "has_dual",
                "u1", "lost1")
 
 
@@ -89,8 +93,24 @@ def derived(x: np.ndarray) -> dict:
 _SCALE_FLOOR = {"selloss_g1": 0.15, "selloss_l5": 0.15, "agc_step": 1.0}
 
 
-def fit_norm(frames: list) -> dict:
-    """Median and tail level of each quantity over clean data. `frames` are (x, mask) pairs."""
+def raw_tails(x: np.ndarray, norm: dict, mask: np.ndarray) -> dict:
+    """99th-percentile deviation of each quantity from the simulated clean median, in raw
+    units, over the masked epochs of one log. Used to compare real clean logs with the simulator."""
+    d = derived(x)
+    out = {}
+    for name, feat, sign in _NORMED:
+        v = (d[feat] if feat.startswith("_") else x[:, IDX[feat]])[mask]
+        v = v[np.isfinite(v)]
+        if v.size >= 100:
+            out[name] = float(np.percentile(sign * (v - norm[name][0]), 99.0))
+    return out
+
+
+def fit_norm(frames: list, real_tails: dict | None = None) -> dict:
+    """Median and tail level of each quantity over clean data. `frames` are (x, mask) pairs.
+    `real_tails` (term -> raw tail measured on real clean logs) can only widen a tail: what
+    counts as unusual has to cover real phones as well as simulated ones."""
+    real_tails = real_tails or {}
     cols: dict = {name: [] for name, _, _ in _NORMED}
     for x, mask in frames:
         d = derived(x)
@@ -106,7 +126,7 @@ def fit_norm(frames: list) -> dict:
             continue
         med = float(np.median(v))
         tail = float(np.percentile(v, 99.0 if sign > 0 else 1.0))
-        norm[name] = (med, float(max(abs(tail - med), _SCALE_FLOOR.get(name, 1e-3))))
+        norm[name] = (med, float(max(abs(tail - med), _SCALE_FLOOR.get(name, 1e-3), real_tails.get(name, 0.0))))
     spread = np.concatenate([x[:, IDX["spread_l1"]][mask] for x, mask in frames])
     spread = spread[np.isfinite(spread)]
     norm["_spread_ref"] = (float(np.percentile(spread, 75.0)) if spread.size else 2.5, 1.0)

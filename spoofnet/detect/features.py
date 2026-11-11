@@ -221,7 +221,8 @@ def _stateless(ms: MeasurementSet, base: DeviceBaseline) -> dict:
         allow = speed * gap + gap**2 + 3.0 + 2.0 * (sp + sp[prev])       # gap^2: room for 2 m/s^2 unseen
         zj.append(np.where(pair, np.clip(disp - allow, 0, None) / (sp + sp[prev] + 1.0), np.nan))
         zn.append(np.where(ok & net_new, np.linalg.norm(s.x - ms.net_ecef, axis=1) / np.sqrt(sp**2 + ms.net_acc**2), np.nan))
-        cnt = trk[:, masks[g]].sum(axis=1)
+        has_pos = np.all(np.isfinite(ms.sat_pos[:, ms.sig_sat[masks[g]]]), axis=-1)
+        cnt = (trk[:, masks[g]] & has_pos).sum(axis=1)
         eligible += cnt >= 6
         fails += (cnt >= 6) & (~s.ok | (s.rms > 8.0))
     f["clk_step"] = _nanmax(zb) if zb else nan

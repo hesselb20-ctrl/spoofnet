@@ -16,7 +16,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 NAMES = {"spoof_simple": "one constellation, flat power", "spoof_multi": "all L1 constellations, flat power",
-         "spoof_drag": "slow drag-off, shaped power", "spoof_time": "time only", "meacon": "meaconing (replay)",
+         "spoof_drag": "slow drag-off, shaped power", "spoof_time": "time only", "meacon": "meaconing (rebroadcast)",
          "jam_weak": "weak, 3 to 6 dB", "jam_moderate": "moderate, 6 to 15 dB", "jam_strong": "strong, 15 to 35 dB"}
 COLORS = ["#1b6ca8", "#d1495b", "#2e933c", "#8a4fd6", "#b8860b"]
 
@@ -36,7 +36,7 @@ def draw(roc: dict, hours: float, chosen: float, title: str, out: Path) -> None:
     ax.axvline(max(row["fa_per_hour"], floor), color="#555555", lw=1.0, ls="--")
     ax.text(max(row["fa_per_hour"], floor) * 1.15, 4, "chosen threshold", color="#555555", fontsize=8, rotation=90, va="bottom")
     ax.axvline(0.01, color="#999999", lw=0.8, ls=":")
-    ax.text(0.01 * 1.1, 97, "target 0.01/h", color="#777777", fontsize=8, va="top")
+    ax.text(0.01 * 1.1, 50, "target 0.01/h", color="#777777", fontsize=8, va="center")
     ax.set_xscale("log")
     ax.set_xlim(floor * 0.8, 20)
     ax.set_ylim(0, 101)
