@@ -1,9 +1,10 @@
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/hero-mobile-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/hero-mobile-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/hero-dark.svg">
-  <img src=".github/assets/hero-light.svg" width="100%" alt="SpoofNet. GNSS jamming and spoofing, mapped from phones. Research prototype, tested in software replay. One real jamming event seen so far.">
-</picture>
+# SpoofNet
+
+GNSS jamming and spoofing, mapped from phones.
+
+<img src=".github/assets/figure.webp" width="100%" alt="3D chart. First, a phone's satellite signal strengths: the L1 signals drop together when a jammer switches on. Then detection rates by attack type and strength. Last, the rates against their targets: spoofing is caught, jamming reaches 49% against a 95% target.">
+
+<sub>From the repository's results files, as summarised in `REPORT.md`. Simulated phones in replay; the only real interference in the data is one flight with one jamming event.</sub>
 
 <picture>
   <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-01-dark.svg">
@@ -53,13 +54,6 @@ Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
   <img src=".github/assets/rule-03-light.svg" width="100%" alt="03 How it works">
 </picture>
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/flow-mobile-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/flow-mobile-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/flow-dark.svg">
-  <img src=".github/assets/flow-light.svg" width="100%" alt="Data flow. Per phone: a raw GNSS log with C/N0, gain, clock and pseudoranges, from GnssLogger or the simulator, is turned into features against a per-signal baseline, and a fitted detector raises jamming, spoofing or meaconing events. Upload and server: each event goes up as type, score and coarse cell under a daily token; events from three or more contributors form an incident; the source is located from C/N0 loss with a 95% ellipse. Publication: rules decide what each audience sees, served by a FastAPI API and a MapLibre map that draws areas without phones as no data.">
-</picture>
-
 1. **Raw log.** One logging session, resampled to 1 Hz: C/N0 per satellite and band, receiver gain
    (AGC) where the phone reports it, clock, pseudoranges, Doppler and a motion summary. It comes from a
    GnssLogger-format text file or from the simulator.
@@ -79,20 +73,6 @@ Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
 7. **Publish.** The public view shows coarse cells, at least three contributors, delayed by
    15 minutes, with no source estimate. Customers get finer cells. Vetted users get the source.
    The map draws areas without phones as no data.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/scene-dark.gif">
-  <img src=".github/assets/scene-light.gif" width="100%" alt="3D view of the demo map near Gdansk: 55 hexagonal coverage cells raised by how many device-hours each collected, with the cells of three simulated incidents, jamming, spoofing and meaconing, lighting up one after another, each labelled with its device count and time window.">
-</picture>
-
-<sub>The 24 hourly coverage files and the incident file in `web/data/`, drawn in 3D. Column height is the
-square root of summed device-hours. Phones, incidents and coverage are simulated. The public snapshot
-holds no source estimate, so none is drawn.</sub>
-
-<img src="docs/media/map-screenshot.jpg" width="100%" alt="Screenshot of the SpoofNet web map near Gdansk: hatched no-data areas, coverage cells and a popup for a simulated meaconing incident labelled software replay.">
-
-<sub>The web map running on the committed snapshot in `web/data/`. Every incident in it is simulated
-and labelled software replay. Map data © OpenStreetMap contributors.</sub>
 
 <picture>
   <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-04-dark.svg">
