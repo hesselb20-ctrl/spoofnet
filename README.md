@@ -80,6 +80,15 @@ Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
    15 minutes, with no source estimate. Customers get finer cells. Vetted users get the source.
    The map draws areas without phones as no data.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/scene-dark.gif">
+  <img src=".github/assets/scene-light.gif" width="100%" alt="3D view of the demo map near Gdansk: 55 hexagonal coverage cells raised by how many device-hours each collected, with the cells of three simulated incidents, jamming, spoofing and meaconing, lighting up one after another, each labelled with its device count and time window.">
+</picture>
+
+<sub>The 24 hourly coverage files and the incident file in `web/data/`, drawn in 3D. Column height is the
+square root of summed device-hours. Phones, incidents and coverage are simulated. The public snapshot
+holds no source estimate, so none is drawn.</sub>
+
 <img src="docs/media/map-screenshot.jpg" width="100%" alt="Screenshot of the SpoofNet web map near Gdansk: hatched no-data areas, coverage cells and a popup for a simulated meaconing incident labelled software replay.">
 
 <sub>The web map running on the committed snapshot in `web/data/`. Every incident in it is simulated
