@@ -1,272 +1,204 @@
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/hero-mobile-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/hero-mobile-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/hero-dark.svg">
-  <img src=".github/assets/hero-light.svg" width="100%" alt="SpoofNet. GNSS jamming and spoofing, mapped from phones. Research prototype, tested in software replay. One real jamming event seen so far.">
-</picture>
+# SpoofNet
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-01-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-01-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-01-dark.svg">
-  <img src=".github/assets/rule-01-light.svg" width="100%" alt="01 What it is">
-</picture>
+![SpoofNet: a ground-level map of GPS jamming and spoofing, from the phones already there. Passive detection only. Research prototype.](docs/media/banner.png)
 
-SpoofNet detects GPS and other satellite navigation (GNSS) jamming and spoofing from the raw
-measurements that Android phones already report: signal strength per satellite, receiver gain and
-clock. Reports from several phones are grouped into incidents, the source is located with an
-uncertainty ellipse, and the result is served through an HTTP API and a web map. It is passive
-detection only. Nothing in this repository transmits.
+A ground-level map of GPS/GNSS jamming and spoofing, built from the raw
+satellite measurements that ordinary Android phones expose.
 
-It is a research prototype. The detection numbers come from simulated phones and from real phone
-logs with synthetic interference added. On real interference there is one observation: one jamming
-event on one public flight log. The Android app only logs and has never been built.
+Today's public interference maps are built from aircraft reports, so they see
+the sky. SpoofNet is meant to see ports, shipping lanes, roads, fields and
+sites. It is **passive detection only**: nothing here transmits, and every
+interference signal used in development exists only in software.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-02-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-02-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-02-dark.svg">
-  <img src=".github/assets/rule-02-light.svg" width="100%" alt="02 Why it exists">
-</picture>
+**[Watch the 72-second explainer](https://hesselb20-ctrl.github.io/spoofnet/)** and
+**[open the demo map](https://hesselb20-ctrl.github.io/spoofnet/map/)** on the project site. The demo map shows
+simulated incidents only, and says so on the map.
 
-**The problem.** Public interference maps such as GPSJam and the Flightradar24 layer are built from
-the navigation accuracy that aircraft broadcast. They show the sky. Ports, shipping lanes, roads and
-fields at ground and sea level have no such view, and a blank cell there means no data, not no
-interference.
+## How it works
 
-**What was missing.** Single-phone cues exist: Google's GnssLogger shows C/N0 and gain falling
-together as a jamming hint. A JRC research app (CrowdShield) detected jamming with phone gain readings
-at Jammertest 2025. What this repository adds is a measured false-alarm rate across everyday
-obstructions, detection on phones without gain readings, spoofing and meaconing checks in one score,
-multi-phone source localisation with a stated uncertainty, and a privacy design where tracks stay
-on the phone.
+Five short loops, 9 to 12 seconds each, show the core of the idea; three still
+pictures fill in the rest. They are cut from the 72-second explainer, which
+plays on the [project site](https://hesselb20-ctrl.github.io/spoofnet/) (no sound). GitHub does not play video
+files kept in a repository, so here the file can only be downloaded:
+[spoofnet-tutorial.mp4](docs/media/spoofnet-tutorial.mp4?raw=true), 4.7 MB.
+A still version of every scene is in [docs/media/](docs/media). All of it is
+rendered from code in [tutorial/](tutorial/README.md).
 
-**Who it is for.** The one-pagers in [`docs/pitch/`](docs/pitch/) address marine insurers, port
-authorities, fleet operators, precision agriculture and telecom timing. None of them is a customer.
+**1. The gap.** Public interference maps are built from what aircraft report.
+They show the sky. What happens in a port, on a road or in a field is blank.
 
-Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
+![Top: a row of map cells filled in from aircraft reports, four of them marked as affected. Bottom: a port crane, a ship, a truck and a tractor under a hatched band labelled "ground and sea level: no data".](docs/media/gap.gif)
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-03-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-03-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-03-dark.svg">
-  <img src=".github/assets/rule-03-light.svg" width="100%" alt="03 How it works">
-</picture>
+**2. Phones already measure the satellites.** Every second an Android phone
+reports the signal strength of each satellite it hears, its receiver gain
+(AGC) and its clock. SpoofNet only listens to that. It never transmits.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/flow-mobile-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/flow-mobile-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/flow-dark.svg">
-  <img src=".github/assets/flow-light.svg" width="100%" alt="Data flow. Per phone: a raw GNSS log with C/N0, gain, clock and pseudoranges, from GnssLogger or the simulator, is turned into features against a per-signal baseline, and a fitted detector raises jamming, spoofing or meaconing events. Upload and server: each event goes up as type, score and coarse cell under a daily token; events from three or more contributors form an incident; the source is located from C/N0 loss with a 95% ellipse. Publication: rules decide what each audience sees, served by a FastAPI API and a MapLibre map that draws areas without phones as no data.">
-</picture>
+![A phone under an arc of satellites, and a panel with one signal-strength bar per satellite, a receiver gain meter and a clock reading.](docs/media/02-phone.png)
 
-1. **Raw log.** One logging session, resampled to 1 Hz: C/N0 per satellite and band, receiver gain
-   (AGC) where the phone reports it, clock, pseudoranges, Doppler and a motion summary. It comes from a
-   GnssLogger-format text file or from the simulator.
-2. **Features.** Each signal keeps an adaptive C/N0 baseline that freezes while the signal looks
-   suspicious, so interference is not learned as normal. Features compare gain, clock, constellations
-   and bands against that baseline.
-3. **Detector.** Evidence terms are combined in a logistic score. Every weight and threshold is
-   fitted on replay data and stored in [`config/detector.json`](config/detector.json). Output is a typed
-   event (`jam`, `spoof`, `meacon`) with reason codes. When all signals fade and the phone has no gain
-   reading, it reports `loss_unknown` instead of guessing between a jammer and a tunnel.
-4. **Event.** What leaves the phone is a type, a score, a coarse map cell and the C/N0 loss, under a
-   token that changes every day and per region. Raw measurements and tracks do not leave.
-5. **Incident.** Events close in space and time are clustered. An incident opens when at least three
-   distinct contributors agree. Its type is a weighted vote.
-6. **Locate.** Phones nearer the source lose more signal. A path-loss fit over the reported losses
-   gives a source position and a 95% ellipse.
-7. **Publish.** The public view shows coarse cells, at least three contributors, delayed by
-   15 minutes, with no source estimate. Customers get finer cells. Vetted users get the source.
-   The map draws areas without phones as no data.
+**3. A jammer or just a roof?** Jamming adds power: every satellite falls by
+the same amount and the receiver turns its gain down. A roof blocks unevenly
+and adds nothing. A phone with no gain reading cannot tell the two apart, so
+it reports "unknown loss" instead of guessing.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/scene-dark.gif">
-  <img src=".github/assets/scene-light.gif" width="100%" alt="3D view of the demo map near Gdansk: 55 hexagonal coverage cells raised by how many device-hours each collected, with the cells of three simulated incidents, jamming, spoofing and meaconing, lighting up one after another, each labelled with its device count and time window.">
-</picture>
+![Two panels. Jamming: all bars equally low, gain low, alarm. Under a roof: bars uneven, gain unchanged, no alarm.](docs/media/jamming.gif)
 
-<sub>The 24 hourly coverage files and the incident file in `web/data/`, drawn in 3D. Column height is the
-square root of summed device-hours. Phones, incidents and coverage are simulated. The public snapshot
-holds no source estimate, so none is drawn.</sub>
+**4. Spoofing leaves fingerprints.** One transmitter makes all satellites look
+equally strong. Position or time jumps. Constellations that were not spoofed
+stop agreeing with the ones that were.
 
-<img src="docs/media/map-screenshot.jpg" width="100%" alt="Screenshot of the SpoofNet web map near Gdansk: hatched no-data areas, coverage cells and a popup for a simulated meaconing incident labelled software replay.">
+![Left: a map where GPS reports a position far from where the phone is, while Galileo still agrees. Right: uniform signal bars, a clock offset step, and four evidence labels.](docs/media/spoofing.gif)
 
-<sub>The web map running on the committed snapshot in `web/data/`. Every incident in it is simulated
-and labelled software replay. Map data © OpenStreetMap contributors.</sub>
+**5. Privacy by construction.** Detection runs on the phone. Raw measurements,
+positions and tracks stay there. What leaves is an event: a type, a coarse map
+cell and a score, under a token that changes every day.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-04-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-04-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-04-dark.svg">
-  <img src=".github/assets/rule-04-light.svg" width="100%" alt="04 Capabilities">
-</picture>
+![A phone holding a track and a lock, and a small card with type, coarse cell and score travelling to an aggregation server.](docs/media/05-privacy.png)
 
-What the code does today. Detection runs in Python, on simulated phones and on recorded logs.
+**6. Many phones make an incident.** Three or more phones in one area open an
+incident. Phones nearer the source lose more signal, and that pattern points to
+where it is, with an uncertainty ellipse. The figures in the animation are
+from simulation.
 
-- **Log reader and writer.** GnssLogger-format text logs, header-driven, with pseudoranges rebuilt
-  from the raw clock fields. `spoofnet/io/gnsslogger.py`
-- **Broadcast ephemeris.** RINEX 3 navigation files for GPS, Galileo and BeiDou MEO/IGSO. GLONASS and
-  BeiDou GEO positions are not implemented. `spoofnet/io/rinex_nav.py`
-- **Simulator.** Constellations, receiver models calibrated to five public phone logs, environments
-  (tunnel, garage, street canyon, forest, boat, car) and synthetic interference applied to the
-  measurements. `spoofnet/sim`
-- **Detectors.** Features, per-device and per-place baselines, logistic fusion and an event state
-  machine for jamming, spoofing and meaconing. `spoofnet/detect`
-- **Replay and calibration.** Cached replay, fitting of every constant, held-out scoring.
-  `spoofnet/replay`, `experiments/`
-- **Network.** Daily contributor tokens, H3 cells, incident clustering, classification, source
-  localisation and an ADS-B cross-check against prepared aggregate tables. `spoofnet/net`
-- **Server.** FastAPI on SQLite: public incidents and coverage, event and coverage upload, and
-  key-protected incidents, CSV export, risk heatmap, geofences and alerts for customer and vetted
-  tiers. `spoofnet/server`
-- **Web map.** Static MapLibre map that reads the API or the committed snapshot. `web/`
-- **Android.** Kotlin SDK and app that log raw GNSS data and probe the phone's capabilities. No
-  detector, no uploader. Never compiled. `android/`
+![A hex map with ten phones showing losses from 6 to 14 dB around an estimated source with a dashed uncertainty ellipse.](docs/media/network.gif)
 
-Results from [`REPORT.md`](REPORT.md). `replay` means simulated phones, or recorded logs with
-synthetic interference. `real` means recorded under real interference.
+**7. An honest map.** Where there are no phones the map says "no data". It
+never draws that as clean.
 
-| Measure | Target | Result | Label |
-|---|---|---|---|
-| Moderate jamming detected, per phone | ≥ 95% | 49% of 250 (87% with gain and a second band, 16% with neither) | `replay` |
-| Spoofing detected, consistent pseudoranges | ≥ 85% | 100% of 200 | `replay` |
-| False alarms per device-hour | < 0.01 | 0.0031 (4 in 1 286 h) | `replay` |
-| Network time to incident, median | ≤ 60 s | 6.2 s | `replay` |
-| Source localisation, median error | ≤ 500 m | 280 m | `replay` |
-| Source inside its 95% ellipse | 95% | 79% | `replay` |
-| Jamming events on one flight log through a documented interference area | | 1, matching the aircraft-based map | `real` |
-| Battery cost | < 5%/day | not measured, no phone | |
+![A hex map: orange incident cells inside green covered cells, everything else hatched as no data.](docs/media/07-map.png)
 
-Known weak points, from the same report:
+The running map, here with simulated incidents and labelled as such (map data
+© OpenStreetMap contributors). [Try it on the project site](https://hesselb20-ctrl.github.io/spoofnet/map/).
 
-- The jamming target is missed. Without gain readings a phone sees jamming only as lower C/N0, and
-  so does a roof.
-- Slow drag-off spoofing is found 49% of the time, after about a minute.
-- Uncertainty ellipses are too small: 79% coverage where 95% is claimed.
-- Nothing has been measured at ground or sea level under real interference. No real spoofing log has
-  been processed.
-- No ADS-B feed is connected. Attestation and the region list are designed, not built.
+![Screenshot of the SpoofNet web map near Gdansk: hatched no-data veil, green coverage cells, an incident popup showing confidence, device count band, coverage and the evidence label "software replay".](docs/media/map-screenshot.jpg)
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-05-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-05-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-05-dark.svg">
-  <img src=".github/assets/rule-05-light.svg" width="100%" alt="05 Quick start">
-</picture>
+**8. The one real observation so far.** On a public log of a flight from Riga
+to Tampere on 22 March 2024, the detector raised one jamming event. It covers
+the same map cells where 15 to 24 % of aircraft reported low accuracy that
+day, and nothing else. One phone, one flight, at 8 km altitude: an
+observation, not a validation. Details in
+[docs/validation/real_world.md](docs/validation/real_world.md).
 
-Requires Python 3.10 or newer. H3 cells need either the `h3` Python package or Node.js. Commands
-below were run on Windows 11 with Python 3.15 and Node 26, where `h3` has no build, so the Node bridge
-is used. On macOS or Linux use `.venv/bin/python` instead of `.venv/Scripts/python`; that path was not
-tested.
+![A chart along the flight: the phone's signal strength and receiver gain both dip over Estonia and the Gulf of Finland, the detector's jamming event spans that dip, and bars show 18, 15, 24 and 20 percent of aircraft reporting low accuracy in the same cells.](docs/media/flight.gif)
 
-```bash
-git clone https://github.com/hesselb20-ctrl/spoofnet.git
-cd spoofnet
-python -m venv .venv
-.venv/Scripts/python -m pip install -e ".[server,dev]" httpx
-cd spoofnet/net/h3bridge && npm ci && cd ../../..
+## Status, 11 November 2026
+
+* **Works in software replay:** the simulator, the on-device detectors, the
+  aggregation and source localisation, the API and the map.
+* **Checked on real phone data:** five public logs. First contact broke the
+  spoofing detector (a continuous false alarm); it was hardened and now raises
+  none on them. On one real flight through a documented interference area it
+  raised one jamming event that matches the aircraft-based map.
+* **Not done:** the Android app has not been built or run on a phone. Nothing
+  has been measured at ground or sea level under real interference. No real
+  spoofing has been seen. There are no contributors and no customers.
+* **Targets:** the spoofing and false-alarm minimum targets are met in replay.
+  The jamming target is missed by a wide margin on phones without AGC.
+
+[REPORT.md](REPORT.md) has the measured numbers, kept apart by evidence label,
+and what failed.
+
+## Read first
+
+| Document | What it is |
+|---|---|
+| [REPORT.md](REPORT.md) | Measured results per milestone, what works on real data, what works only in replay, what failed, next steps |
+| [DESIGN.md](DESIGN.md) | Detector design, false-alarm strategy, privacy, publication rules, validation plan, targets |
+| [THREAT_MODEL.md](THREAT_MODEL.md) | What can and cannot be detected, and threats to the system and its contributors |
+| [docs/validation/real_world.md](docs/validation/real_world.md) | The real-phone results in full, and how to get ground truth lawfully |
+| [docs/device_matrix.md](docs/device_matrix.md) | Tested phones (empty until a real capability report exists) |
+| [docs/pitch/](docs/pitch/) | One-pagers per sector and the technical validation note |
+| [android/README.md](android/README.md) | The logger app and SDK, and what to check on the first build |
+
+## Layout
+
+```
+android/            Kotlin SDK (logger, capability probe) and app. Not yet built.
+spoofnet/io         GnssLogger-format log reader and writer, broadcast ephemeris
+spoofnet/sim        constellations, phone models, environments, synthetic interference
+spoofnet/detect     features, per-device and per-place baselines, fusion, events
+spoofnet/replay     replay harness, calibration, scoring
+spoofnet/net        H3 cells, privacy, events, clustering, localisation, ADS-B cross-check
+spoofnet/server     storage, publication rules, HTTP API
+web/                static map (MapLibre GL, OpenStreetMap, OpenSeaMap)
+site/               landing page of the project site (published by .github/workflows/pages.yml)
+tutorial/           the explainer video and the images above, as code (Remotion)
+docs/media/         the rendered video, the looping GIFs and the still images
+experiments/        the scripts that produce every reported number
+results/            their output
+config/             detector.json and real_tails.json (fitted, never hand-edited), publication_rules.json
+tests/              unit tests
 ```
 
-`httpx` is needed only for the HTTP API test. Without it that test is skipped. Without the Node step,
-or `h3`, most tests fail with `H3 is unavailable`.
+## Run it
 
-Run the tests. Expect `41 passed`.
+Needs Python 3.10 or newer. Node.js is needed only if your Python has no build
+of the `h3` package (the code then runs the same H3 library through Node).
 
 ```bash
+python -m venv .venv
+.venv/Scripts/python -m pip install -e ".[server,dev]" httpx     # Windows; use .venv/bin/python elsewhere
+cd spoofnet/net/h3bridge && npm install && cd ../../..            # only without the h3 Python package
 .venv/Scripts/python -m pytest -q
 ```
 
-Print every headline number from the committed results in `results/`.
+Reproduce the numbers (each script writes into `results/`):
 
 ```bash
-.venv/Scripts/python experiments/summarise.py
+python experiments/detector_pipeline.py --stage m3                     # fit, choose thresholds, test, ROC
+python experiments/detector_pipeline.py --stage final --reuse-config   # 1 286 fresh clean hours
+python experiments/plot_roc.py
+python experiments/m4_place.py                                         # per-place baseline on repeated routes
+python experiments/m5_network.py                                       # multi-device incidents, source localisation
+python experiments/m7_demo.py                                          # load simulated incidents, write the map snapshot
+python experiments/summarise.py                                        # print every headline number
 ```
 
-Open the map at `http://127.0.0.1:8080/`. It reads the committed snapshot in `web/data/`, which is
-simulated and labelled so, and loads tiles from OpenStreetMap.
+With the public real-phone logs (fetch
+[Zenodo 14712684](https://zenodo.org/records/14712684) into a folder first):
 
 ```bash
-.venv/Scripts/python -m http.server 8080 --directory web
+python experiments/m6_real_tails.py <folder>              # real clean tails -> config/real_tails.json
+python experiments/m6_term_audit.py <folder>              # every evidence term, real against simulated
+python experiments/m6_recorded_logs.py <folder> --exclude FLIGHT
+python experiments/m6_flight.py <folder>/FLIGHT/gnss_log_2024_03_22_23_05_42.txt
 ```
 
-Start the API at `http://127.0.0.1:8787/v1/public/meta`. It creates an empty `spoofnet.sqlite`, so the
-map it serves at `/` shows no incidents until events are uploaded. Customer and vetted routes return
-403 without a key.
+See the map:
 
 ```bash
-.venv/Scripts/python -m uvicorn spoofnet.server.app:app --port 8787
+python -m uvicorn spoofnet.server.app:app --port 8787     # then open http://localhost:8787/
 ```
 
-Not run here: refitting the detector (`experiments/detector_pipeline.py`), the real-log scripts, which
-need the [Zenodo 14712684](https://zenodo.org/records/14712684) logs, and the Android build. See
-[`REPORT.md`](REPORT.md), [`docs/validation/real_world.md`](docs/validation/real_world.md) and
-[`android/README.md`](android/README.md).
+The map also works without a server from the snapshot in `web/data/`, on any
+static host. Everything in that snapshot is simulated and is labelled so. The
+[project site](https://hesselb20-ctrl.github.io/spoofnet/map/) serves exactly that: every push to `main` that
+touches `site/`, `web/` or `docs/media/` republishes it.
 
-The same map with the same snapshot is published at
-[hesselb20-ctrl.github.io/spoofnet/map](https://hesselb20-ctrl.github.io/spoofnet/map/).
+Inspect a phone log:
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-06-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-06-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-06-dark.svg">
-  <img src=".github/assets/rule-06-light.svg" width="100%" alt="06 Stack, status, roadmap">
-</picture>
+```bash
+python -m spoofnet.io.gnsslogger --summary <log.txt>
+python -m spoofnet.io.gnsslogger --capability <log.txt>
+```
 
-**Stack**
+## Rules this project keeps
 
-| Layer | Built with |
-|---|---|
-| Detectors, simulator, replay, network | Python 3.10+, NumPy, SciPy |
-| H3 cells | `h3` package, or `h3-js` through a Node bridge |
-| Server | FastAPI, uvicorn, SQLite |
-| Map | MapLibre GL, OpenStreetMap and OpenSeaMap tiles, no build step |
-| Android SDK and app | Kotlin, Gradle, minSdk 26 |
-| Project site | GitHub Pages, deployed by `.github/workflows/pages.yml` |
+* Passive only. No transmitter is built, described or tested. Real-world tests
+  only observe officially announced exercises from lawful places.
+* Raw measurements and tracks never leave the phone. The server gets events and
+  coarse coverage, under tokens that cannot be linked across days or regions.
+* The public map shows coarse areas with at least three contributors, delayed.
+  Precise source estimates go to vetted users and authorities only.
+* Areas without contributors are drawn as "no data", never as clean.
+* "Validated in replay" and "validated on real-world data" are never mixed.
+* Thresholds come from data through `experiments/`, not from intuition.
 
-**Status**
+## Data and map credits
 
-| Part | State |
-|---|---|
-| Detectors | Built. Measured in replay. Hardened and checked on five public real-phone logs. |
-| Network aggregation and localisation | Built. Measured on simulated multi-phone scenarios only. |
-| API and map | Run locally. The map and its simulated snapshot are on GitHub Pages. The API is not deployed. Postgres schema written, not used. |
-| Android app | Logging and capability probe only. Never compiled or installed. |
-| Real interference | One jamming event on one flight log. Nothing at ground or sea level. No real spoofing. |
-| CI | Pages deploy only. Tests do not run in CI. |
-
-**Roadmap.** The three next steps in the report:
-
-1. Build the logger and run it on 20 phones for a week on one route with documented interference,
-   such as a Baltic ferry route or port. Stop if there are more than three false alarms in 300
-   device-hours.
-2. Get ground truth: apply to Jammertest 2027 and contact the JRC authors of the 2025 phone study.
-3. Test willingness to pay with ten conversations in one segment, starting with marine underwriters,
-   before building more.
-
-**Documents**
-
-| File | Contents |
-|---|---|
-| [`REPORT.md`](REPORT.md) | Results per milestone, what failed, next steps |
-| [`DESIGN.md`](DESIGN.md) | Prior art, detectors, false-alarm strategy, privacy, publication rules, targets |
-| [`THREAT_MODEL.md`](THREAT_MODEL.md) | What can and cannot be detected, threats to the system and contributors |
-| [`docs/validation/real_world.md`](docs/validation/real_world.md) | Real-phone results in full |
-| [`docs/device_matrix.md`](docs/device_matrix.md) | Tested phones, empty until a real capability report exists |
-| [`docs/RESPONSIBLE_DISCLOSURE.md`](docs/RESPONSIBLE_DISCLOSURE.md) | Disclosure policy |
-| [`docs/pitch/`](docs/pitch/) | One-pagers per sector and a technical validation note |
-| [`android/README.md`](android/README.md) | Logger app and SDK, and the first-build checklist |
-| [`docs/media/spoofnet-tutorial.mp4`](docs/media/spoofnet-tutorial.mp4?raw=true) | 72-second explainer, no sound, 4.7 MB download. Also on the [project site](https://hesselb20-ctrl.github.io/spoofnet/) |
-
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-07-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-07-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-07-dark.svg">
-  <img src=".github/assets/rule-07-light.svg" width="100%" alt="07 License">
-</picture>
-
-No license file yet. All rights reserved until one is added.
-
-Third-party data keeps its own terms. Map data © OpenStreetMap contributors (ODbL), sea marks
-© OpenSeaMap. Real-phone logs: E. Takiguchi Medina and E. S. Lohan, Zenodo 10.5281/zenodo.14712684,
-CC BY 4.0. Aircraft comparison: GPSJam daily data. OpenSky Network data may be used for research and
-non-profit work only.
+Map data © OpenStreetMap contributors (ODbL). Sea marks © OpenSeaMap.
+Rendering by MapLibre GL JS. Cell grid: H3. The OpenStreetMap tile server is
+for light use; a deployment with real traffic needs its own tile source.
+Real-phone logs: E. Takiguchi Medina and E. S. Lohan, Zenodo
+10.5281/zenodo.14712684, CC BY 4.0. Aircraft comparison: GPSJam daily data.
+OpenSky Network data may be used for research and non-profit work only; any
+commercial use needs their written permission first.
