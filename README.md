@@ -6,12 +6,7 @@ GNSS jamming and spoofing, mapped from phones.
 
 <sub>From the repository's results files, as summarised in `REPORT.md`. Simulated phones in replay; the only real interference in the data is one flight with one jamming event.</sub>
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-01-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-01-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-01-dark.svg">
-  <img src=".github/assets/rule-01-light.svg" width="100%" alt="01 What it is">
-</picture>
+## What it is
 
 SpoofNet detects GPS and other satellite navigation (GNSS) jamming and spoofing from the raw
 measurements that Android phones already report: signal strength per satellite, receiver gain and
@@ -23,12 +18,7 @@ It is a research prototype. The detection numbers come from simulated phones and
 logs with synthetic interference added. On real interference there is one observation: one jamming
 event on one public flight log. The Android app only logs and has never been built.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-02-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-02-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-02-dark.svg">
-  <img src=".github/assets/rule-02-light.svg" width="100%" alt="02 Why it exists">
-</picture>
+## Why it exists
 
 **The problem.** Public interference maps such as GPSJam and the Flightradar24 layer are built from
 the navigation accuracy that aircraft broadcast. They show the sky. Ports, shipping lanes, roads and
@@ -47,12 +37,7 @@ authorities, fleet operators, precision agriculture and telecom timing. None of 
 
 Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-03-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-03-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-03-dark.svg">
-  <img src=".github/assets/rule-03-light.svg" width="100%" alt="03 How it works">
-</picture>
+## How it works
 
 1. **Raw log.** One logging session, resampled to 1 Hz: C/N0 per satellite and band, receiver gain
    (AGC) where the phone reports it, clock, pseudoranges, Doppler and a motion summary. It comes from a
@@ -74,12 +59,7 @@ Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
    15 minutes, with no source estimate. Customers get finer cells. Vetted users get the source.
    The map draws areas without phones as no data.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-04-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-04-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-04-dark.svg">
-  <img src=".github/assets/rule-04-light.svg" width="100%" alt="04 Capabilities">
-</picture>
+## Capabilities
 
 What the code does today. Detection runs in Python, on simulated phones and on recorded logs.
 
@@ -127,12 +107,7 @@ Known weak points, from the same report:
   been processed.
 - No ADS-B feed is connected. Attestation and the region list are designed, not built.
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-05-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-05-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-05-dark.svg">
-  <img src=".github/assets/rule-05-light.svg" width="100%" alt="05 Quick start">
-</picture>
+## Quick start
 
 Requires Python 3.10 or newer. H3 cells need either the `h3` Python package or Node.js. Commands
 below were run on Windows 11 with Python 3.15 and Node 26, where `h3` has no build, so the Node bridge
@@ -185,12 +160,7 @@ need the [Zenodo 14712684](https://zenodo.org/records/14712684) logs, and the An
 The same map with the same snapshot is published at
 [hesselb20-ctrl.github.io/spoofnet/map](https://hesselb20-ctrl.github.io/spoofnet/map/).
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-06-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-06-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-06-dark.svg">
-  <img src=".github/assets/rule-06-light.svg" width="100%" alt="06 Stack, status, roadmap">
-</picture>
+## Stack, status, roadmap
 
 **Stack**
 
@@ -237,12 +207,7 @@ The same map with the same snapshot is published at
 | [`android/README.md`](android/README.md) | Logger app and SDK, and the first-build checklist |
 | [`docs/media/spoofnet-tutorial.mp4`](docs/media/spoofnet-tutorial.mp4?raw=true) | 72-second explainer, no sound, 4.7 MB download. Also on the [project site](https://hesselb20-ctrl.github.io/spoofnet/) |
 
-<picture>
-  <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset=".github/assets/rule-mobile-07-dark.svg">
-  <source media="(max-width: 600px)" srcset=".github/assets/rule-mobile-07-light.svg">
-  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/rule-07-dark.svg">
-  <img src=".github/assets/rule-07-light.svg" width="100%" alt="07 License">
-</picture>
+## License
 
 No license file yet. All rights reserved until one is added.
 
