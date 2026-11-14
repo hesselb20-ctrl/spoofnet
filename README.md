@@ -59,6 +59,10 @@ Prior art and sources: [`DESIGN.md`](DESIGN.md) section 0.
    15 minutes, with no source estimate. Customers get finer cells. Vetted users get the source.
    The map draws areas without phones as no data.
 
+<img src=".github/assets/figure-how.webp" width="100%" alt="Evidence lines jump when a jammer switches on and the score crosses 0.9; phone cells light up on a map, and an ellipse lands 160 m from the true source.">
+
+<sub>Simulated phones, replayed network run 1054. Not real interference.</sub>
+
 ## Capabilities
 
 What the code does today. Detection runs in Python, on simulated phones and on recorded logs.
@@ -106,6 +110,10 @@ Known weak points, from the same report:
 - Nothing has been measured at ground or sea level under real interference. No real spoofing log has
   been processed.
 - No ADS-B feed is connected. Attestation and the region list are designed, not built.
+
+<img src=".github/assets/figure-more.webp" width="100%" alt="Location estimates scatter around the true source, 79% fall inside their own 95% ellipse, then a Riga to Tampere flight track alarms over cells where aircraft reported degraded navigation.">
+
+<sub>154 replayed incidents with simulated phones (<code>results/m5_network.json</code>); one real flight, one phone.</sub>
 
 ## Quick start
 
